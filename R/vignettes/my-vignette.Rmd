@@ -1,0 +1,76 @@
+---
+title: "Introduction to SCRABBLE"
+author: 
+  - name: Tao Peng
+date: "Updated on `r Sys.Date()`"
+package: "SCRABBLE"
+output: BiocStyle::pdf_document
+mainfont: Arial
+vignette: >
+  %\VignetteIndexEntry{SCRABBLE}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r}
+library(SCRABBLE)
+```
+
+# Simulation Data Study
+## Data Generation
+
+The data set was generated from down sampling from bulk RNAseq data. We used the bulk RNA-Seq data set of mouse hair follicles (GSE85039). In total, the dataset contains 20 different combinations of anatomic sites and developmental time points, thus constituting a high dimensional measurement space. We used the following procedures to generate the drop-out datasets. 1) We selected 732 genes that are differentially expressed in the 20 conditions based on ANOVA analysis. 2) We randomly selected 10 out of the 20 conditions. 3) For each condition, we generated 100 resampled datasets. The means and standard deviations of genes were calculated for each condition based on the 100 resampled datasets. 4) 100 new datasets were generated based on the mean and the standard deviation of each gene. 5) The final data set was obtained by combining 1000 samples representing the 10 conditions. This 1000x732 matrix now represents 1000 cells and 732 genes. 6) we make the drop-out rate of each gene in each cell following a double exponential function . Zero values are introduced into the simulated data for each gene in each cell based on the Bernoulli distribution defined by the corresponding drop-out rate.
+
+### Load the data
+
+```{r}
+data_sc <- data[[1]]
+data_bulk <- data[[2]]
+data_true <- data[[3]]
+```
+
+### Plot the data
+```{r, fig.height= 3, fig.width= 5}
+pl <- list()
+pl[[1]] <- plot_data(log10(data_true + 1),"True Data")
+pl[[2]] <- plot_data(log10(data_sc + 1),"Drop-out Data")
+main <- gridExtra::grid.arrange(grobs = pl,ncol = 2, top = "")
+```
+
+## Run SCRABBLE
+
+SCRABBLE imputes drop-out data by optimizing an objective function that consists of three terms. The first term ensures that imputed values for genes with nonzero expression remain as close to their original values as possible, thus minimizing unwanted bias towards expressed genes. The second term ensures the rank of the imputed data matrix to be as small as possible. The rationale is that we only expect a limited number of distinct cell types in the samples. The third term operates on the bulk RNA-Seq data. It ensures consistency between the average gene expression of the aggregated imputed data and the average gene expression of the bulk RNA-Seq data. We developed 58 a convex optimization algorithm to minimize the objective function.
+
+### Set up the parameter used in SCRABBLE
+```{r}
+parameter <- c(10,1e-5,1e-4)
+nIter <- 30
+```
+
+### Run SCRABLE
+```{r}
+result <- scrabble(data, parameter = parameter, nIter = nIter, error_out_threshold = 1e-05, nIter_inner = 30, error_inner_threshold = 1e-05)
+```
+
+### Plot the data
+```{r, fig.height = 3, fig.width= 7, fig.wide = TRUE}
+pl <- list()
+pl[[1]] <- plot_data(log10(data[[3]] + 1),"True Data")
+pl[[2]] <- plot_data(log10(data[[1]] + 1),"Drop-out Data")
+pl[[3]] <- plot_data(log10(result + 1),"Imputed by SCRABBLE")
+main <- gridExtra::grid.arrange(grobs = pl, ncol = 3, top = "")
+```
+
+# SessionInfo
+```{r}
+sessionInfo()
+```
