@@ -38,14 +38,8 @@ result <- scrabble(data1,
                    error_inner_threshold = 1e-5)
 ```                   
 ## MATLAB Version
+
 ### Quick start
-
-
-%% Clear all variables
-clear all
-clc
-close all
-
 #### Load the data
 There are three datasets in the .mat file. There are the true data set, Drop-out data set, and the imputed data set by SCRABBLE.
 ```
