@@ -40,32 +40,36 @@ result <- scrabble(data1,
 ## MATLAB Version
 ### Quick start
 
-```
+
 %% Clear all variables
 clear all
 clc
 close all
 
-%% Load the data
-% There are three datasets in the .mat file. There are the true data set,
-% Drop-out data set, and the imputed data set by SCRABBLE.
+#### Load the data
+There are three datasets in the .mat file. There are the true data set, Drop-out data set, and the imputed data set by SCRABBLE.
+```
 load('demo_data_HF.mat')
-
-%% Prepare the data
-% We construct the data structure which is taken as one of the input of
-% *scrabble* https://geo2.ggpht.com/cbk?panoid=Tj72QX_B4DCrqVcMhsCUsA&output=thumbnail&cb_client=search.TACTILE.gps&thumb=2&w=408&h=200&yaw=238.76057&pitch=0&thumbfov=100function.
+```
+#### Prepare the data
+We construct the data structure which is taken as one of the input of SCRABBLE.
+```
 data.data_sc = data_sc;
 data.data_bulk = data_bulk;
+```
 
-%% Prepare the parameter for SCRABBLE
-% set up the parameters used in example
-parameter = [100,2e-7];
+#### Prepare the parameter for SCRABBLE
+Set up the parameters used in example
+```
+parameter = [10,1e-5,1e-4];
 nIter = 100;
-
-%% Run SCRABBLE
+```
+#### Run SCRABBLE
+```
 dataRecovered = scrabble(data,parameter,nIter);
-
-%% Plot the results
+```
+#### Plot the results
+```
 gcf = figure(1);
 set(gcf, 'Position', [100, 500, 1200, 300])
 subplot(1,3,1)
@@ -80,7 +84,6 @@ subplot(1,3,3)
 imagesc(log10(dataRecovered+1))
 title('Imputed Data by SCRABBLE')
 axis off
-
 ```
 
 ## Help
