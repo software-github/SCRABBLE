@@ -1,16 +1,17 @@
 # SCRABBLE
 
-### SCRABBLE has been implemented in R and MATLAB.
+## SCRABBLE has been implemented in R and MATLAB.
 
 SCRABBLE imputes drop-out data by optimizing an objective function that consists of three terms. The first term ensures that imputed values for genes with nonzero expression remain as close to their original values as possible, thus minimizing unwanted bias towards expressed genes. The second term ensures the rank of the imputed data matrix to be as small as possible. The rationale is that we only expect a limited number of distinct cell types in the samples. The third term operates on the bulk RNA-Seq data. It ensures consistency between the average gene expression of the aggregated imputed data and the average gene expression of the bulk RNA-Seq data. We developed a convex optimization algorithm to minimize the objective function.
 
-## Install from Github 
+## R Version
+### Install from Github 
 ```
 library(devtools)
 install_github("XXXXX")
 ```
 
-## Install from source codes
+### Install from source codes
 
 * Download source codes [here](XXX) 
 and In R type:
@@ -36,3 +37,9 @@ result <- scrabble(data1,
                    nIter_inner = 100,
                    error_inner_threshold = 1e-5)
 ```                   
+## MATLAB Version
+
+
+## Help
+
+## Reference
