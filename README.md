@@ -8,7 +8,7 @@ SCRABBLE imputes drop-out data by optimizing an objective function that consists
 ### Install from Github 
 ```
 library(devtools)
-install_github("XXXXX")
+install_github("tanlabcode/SCRABBLE/tree/master/R")
 ```
 
 ### Install from source codes
