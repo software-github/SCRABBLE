@@ -20,7 +20,7 @@ and In R type:
 install.packages(path_to_file, type = 'source', rep = NULL)
 ```
 Where `path_to_file` would represent the full path and file name:
-- On Windows it will look something like this: "C:\\Download\SCRABBLE.tar.gz".
+- On Windows it will look something like this: "C:\\Downloads\SCRABBLE.tar.gz".
 - On UNIX it will look like this: "~/Downloads/SCRABBLE.tar.gz".
 
 
