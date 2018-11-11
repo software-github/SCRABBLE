@@ -13,7 +13,7 @@ install_github("XXXXX")
 
 ### Install from source codes
 
-* Download source codes [here](https://chopri.box.com/s/5vhh5ex450ml2pqf7ili5trzqnp5fumc) 
+Download source codes [here](https://chopri.box.com/s/5vhh5ex450ml2pqf7ili5trzqnp5fumc) 
 and In R type:
  
 ```
