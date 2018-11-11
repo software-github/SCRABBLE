@@ -13,11 +13,11 @@ install_github("XXXXX")
 
 ### Install from source codes
 
-* Download source codes [here](XXX) 
+* Download source codes [here](https://chopri.box.com/s/5vhh5ex450ml2pqf7ili5trzqnp5fumc) 
 and In R type:
  
 ```
-install.packages('XXX', type = 'source', rep = NULL)
+install.packages('(Your Directory of downloaded package)\SCRABBLE.tar.gz', type = 'source', rep = NULL)
 ```
 
 
