@@ -24,7 +24,7 @@ Where `path_to_file` would represent the full path and file name:
 - On UNIX it will look like this: "~/Downloads/SCRABBLE.tar.gz".
 
 
-### Quick tutorial
+### Quick start
 ```
 data_sc <- data[[1]]
 data_bulk <- data[[2]]
