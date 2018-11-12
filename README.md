@@ -1,5 +1,5 @@
 # SCRABBLE
-<font size="20"> <b>S</b>ingle <b>C</b>ell <b>R</b>NA-Seq imput<b>A</b>tion constrained <b>B</b>y <b>B</b>u<b>L</b>k RNAs<b>E</b>q data </font>
+#### <b>S</b>ingle <b>C</b>ell <b>R</b>NA-Seq imput<b>A</b>tion constrained <b>B</b>y <b>B</b>u<b>L</b>k RNAs<b>E</b>q data
 
 ## SCRABBLE has been implemented in R and MATLAB.
 
