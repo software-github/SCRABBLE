@@ -65,7 +65,7 @@ nIter = 100;
 ```
 dataRecovered = scrabble(data,parameter,nIter);
 ```
-#### Plot the results
+#### Visualize the results
 ```
 gcf = figure(1);
 set(gcf, 'Position', [100, 500, 1200, 300])
