@@ -121,7 +121,7 @@ get_data <- function(tissue_name,
   
   data[[5]] = data_bulk_avg
   
-  saveRDS(data,file = paste0("data/",tissue_name,"_imputation.rds"))
+  saveRDS(data,file = paste0("data_sc_bulk/",tissue_name,"_imputation.rds"))
   
 }
 
@@ -209,7 +209,7 @@ pdf_dun_tsne <- function(tissue_name){
 
 pdf_dun_tsne1 = function(tissue_name){
   
-  data_tsne = readRDS(file = paste0("data_all/", tissue_name,"_TSNE.rds"))
+  data_tsne = readRDS(file = paste0("data_all/",tissue_name,"_TSNE.rds"))
   
   load(paste0("data_sc_bulk/sc_",tissue_name,".RData"))
   
