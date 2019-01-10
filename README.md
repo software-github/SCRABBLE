@@ -89,4 +89,4 @@ Please feel free to contact Tao Peng (pengt@email.chop.edu) if you have any ques
 ## Reference
 Tao Peng et al. Single-cell RNA-Seq imputation constrained by bulk RNA-Seq data. Submitted. 2018
 
-**Remark**: The codes of analysis for this manuscript is found using (cd /R/BenchMark)
+**Remark**: The scripts of analysis in this manuscript are found using **cd ~/SCRABBLE/R/BenchMark**
