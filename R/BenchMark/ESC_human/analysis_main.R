@@ -107,6 +107,24 @@ for(i in c(1:7)){
          sep = ',')
 } 
 
+
+# Generate the index of the pathway databases
+# ---------------------------------------------------------------------------------
+#  Generate the index 
+# ---------------------------------------------------------------------------------
+
+celltype <- c("H9", "DEC", "EC",  "HFF", "NPC", "TB", "H1")
+
+pathways <- c("IPA", "KEGG", "REACTOME")
+
+for(i in c(1:7)){
+  for(j in c(1:3)){
+    
+    generate_index(celltype[i], pathways[j])
+    
+  }
+}
+
 # ---------------------------------------------------------------------------------
 # Run DrImpute 
 # ---------------------------------------------------------------------------------
@@ -169,7 +187,7 @@ for(i in c(1:7)){
   # impute the data using scImpute
   data_dropout <- data_sc
   
-  write.table(data_dropout,paste0("/imputation_scimpute_data/sdropout_scimpute_",i,".csv"),
+  write.table(data_dropout,paste0("/imputation_scimpute_data/dropout_scimpute_",i,".csv"),
               sep=',',
               row.names = TRUE,
               col.names = TRUE
@@ -196,7 +214,9 @@ for(i in c(1:7)){
   data_sc1[index_sc,] <- as.matrix(data_dropout)
   
   saveRDS(data_sc1, 
-          file = paste0("/imputation_scimpute_data/data_",celltype[i],"_scimpute_imputation.rds"))
+          file = paste0("/imputation_scimpute_data/data_",
+                        celltype[i],
+                        "_scimpute_imputation.rds"))
   
 }
 
@@ -291,149 +311,6 @@ for(i in c(1:7)){
 }
 
 
-# Generate the index of the pathway databases
-
-# ---------------------------------------------------------------------------------
-# Run IPA
-# ---------------------------------------------------------------------------------
-
-# load the gene
-data_gene <- fread(file = "data_all/gene_ESC.csv", 
-                   header = FALSE)
-
-data_sc <- as.matrix(fread(file = paste0("data_all/data_sc_",
-                                         "DEC",
-                                         ".csv")))
-
-
-var0 <- MatVar(data_sc,1)
-
-index_sc <- var0 > 1e-10
-
-data_gene <- data_gene[index_sc,]
-
-
-n_gene <- dim(data_gene)[1]
-
-
-# IPA
-N <- 186
-index <- list()
-for(i in c(1:N)){
-  
-  tmp <- fread(file = paste0("data_all/IPA/IPA_gene_",i,".csv"), 
-               header = FALSE)
-  
-  tmp <- match(tmp$V1, data_gene$V1)
-  
-  tmp <- tmp[!is.na(tmp)]
-  
-  index[[i]] <- tmp
-}
-
-for(i in c(1:N)){
-  
-  tmp <- c()
-  
-  k <- length(index[[i]])
-  
-  for(j in c(1:100)){
-    set.seed(j)
-    tmp <- rbind(tmp, sample(1:n_gene,k))
-  }
-  
-  index[[i]] <- rbind(index[[i]],tmp)
-  
-}
-
-saveRDS(index, file = "data_all/IPA_index.rds")
-
-# ---------------------------------------------------------------------------------
-# RunKEGG
-# ---------------------------------------------------------------------------------
-
-N <- 186
-index <- list()
-for(i in c(1:N)){
-  
-  tmp <- fread(file = paste0("data_all/KEGG/KEGG_gene_",i,".csv"), 
-               header = FALSE)
-  
-  tmp <- match(tmp$V1, data_gene$V1)
-  
-  tmp <- tmp[!is.na(tmp)]
-  
-  index[[i]] <- tmp
-}
-
-for(i in c(1:N)){
-  
-  tmp <- c()
-  
-  k <- length(index[[i]])
-  
-  for(j in c(1:100)){
-    set.seed(j)
-    tmp <- rbind(tmp, sample(1:n_gene,k))
-  }
-  
-  index[[i]] <- rbind(index[[i]],tmp)
-  
-}
-
-saveRDS(index, file = "data_all/KEGG_index.rds")
-
-# ---------------------------------------------------------------------------------
-# Run REACTOME
-# ---------------------------------------------------------------------------------
-# 
-N <- 674
-index <- list()
-for(i in c(1:N)){
-  
-  tmp <- fread(file = paste0("data_all/REACTOME/REACTOME_gene_",i,".csv"), 
-               header = FALSE)
-  
-  tmp <- match(tmp$V1, data_gene$V1)
-  
-  tmp <- tmp[!is.na(tmp)]
-  
-  index[[i]] <- tmp
-}
-
-for(i in c(1:N)){
-  
-  tmp <- c()
-  
-  k <- length(index[[i]])
-  
-  for(j in c(1:100)){
-    set.seed(j)
-    tmp <- rbind(tmp, sample(1:n_gene,k))
-  }
-  
-  index[[i]] <- rbind(index[[i]],tmp)
-  
-}
-
-saveRDS(index, file = "data_all/REACTOME_index.rds")
-
-# ---------------------------------------------------------------------------------
-#  Generate the index 
-# ---------------------------------------------------------------------------------
-
-celltype <- c("H9", "DEC", "EC",  "HFF", "NPC", "TB", "H1")
-
-pathways <- c("IPA", "KEGG", "REACTOME")
-
-for(i in c(1:7)){
-  for(j in c(1:3)){
-    
-    generate_index(celltype[i], pathways[j])
-    
-  }
-}
-
 # ---------------------------------------------------------------------------------
 #  Generate the ratio
 # ---------------------------------------------------------------------------------
@@ -453,7 +330,7 @@ for(j in c(1:3)){
       
       values <- calculate_ratio(celltype[i], pathways[j], method_name[k])
       
-      saveRDS(values, file = paste0(cwd,"/data_all/data_",
+      saveRDS(values, file = paste0("/data_all/data_",
                                     celltype[i], "_",pathways[j],
                                     "_", method_name[k],".rds"))
     }
