@@ -1,5 +1,5 @@
 # This is the main R file to generate the results related our manuscript
-# figure 6 and the supplementary figures related to figure 6.
+# figure 7 and the supplementary figures related to figure 7.
 # Please contact Tao Peng: pengt@email.chop.edu if you have any questions 
 # about the scripts or data
 
@@ -540,12 +540,14 @@ save(data_select,meta_data,file = paste0("data_sc_bulk/sc_",tissue_name,".RData"
 # Prepare the data used for the imputation
 # ---------------------------------------------------------------------------------
 
-# Define the tissue name 
+# Define the tissue name and file name of the bulk RNAseq data
 data_tissue_file <- read.table(file = "data/bulk_data_name.txt", sep = ",")
 
+# The tissue name 
 common_tissue <- c("FetalBrain", "SmallIntestine", "Kidney", "Liver", 
                    "Spleen", "Placenta", "FetalLiver", "Lung")
 
+# get the data for the imputation
 for(i in c(1:8)){
   
   get_data(common_tissue[i], data_tissue_file)
@@ -560,7 +562,7 @@ for(i in c(1:8)){
 common_tissue <- c("FetalBrain", "SmallIntestine", "Kidney", "Liver", 
                    "Spleen", "Placenta", "FetalLiver", "Lung")
 
-# do the imputation
+# do the imputation and save the data in the folder "/imputation_data"
 for(i in c(1:8)){
   
   tissue_name <- common_tissue[i]
@@ -569,7 +571,7 @@ for(i in c(1:8)){
   
   extdata <- DrImpute(data[[1]]) 
   
-  saveRDS(extdata, file = paste0(cwd,"/imputation_data/",
+  saveRDS(extdata, file = paste0("/imputation_data/",
                                  tissue_name,
                                  "_drimpute_imputation.rds"))
   
@@ -584,39 +586,38 @@ for(i in c(1:8)){
 common_tissue <- c("FetalBrain", "SmallIntestine", "Kidney", "Liver", 
                    "Spleen", "Placenta", "FetalLiver", "Lung")
 
-# do the imputation
+# do the imputation and save the data in the folder "/imputation_data"
 for(i in c(1:8)){
   
   tissue_name <- common_tissue[i]
   
   data <- readRDS(paste0("/data_sc_bulk/",tissue_name,"_imputation.rds"))
   
-  tmp <- as.matrix(data[[1]])
-  
-  write.table(tmp,paste0("imputation_data/",tissue_name,"_scimpute.csv"),
+  write.table(as.matrix(data[[1]]), paste0("/imputation_data/",tissue_name,"_scimpute.csv"),
               sep=',',
               row.names = TRUE,
               col.names = TRUE
   )
   
   scimpute(
-    paste0("imputation_data/",tissue_name,"_scimpute.csv"),
+    paste0("/imputation_data/",tissue_name,"_scimpute.csv"),
     infile = "csv",           
     outfile = "csv",          
-    out_dir = paste0("imputation_data/scImpute_", tissue_name, "_"),
+    out_dir = paste0("/imputation_data/scImpute_", tissue_name, "_"),
     drop_thre = 0.5,          
     Kcluster = 2,
     ncores = 2)             
   
-  data_dropout <- read.table( file = paste0("imputation_data/scImpute_", tissue_name,
+  data_scimpute <- read.table( file = paste0("/imputation_data/scImpute_", tissue_name,
                                             "_scimpute_count.csv") ,
                               header = TRUE, sep=",")
   
-  data_dropout$X <- NULL
+  data_scimpute$X <- NULL
   
-  system(paste0("rm imputation_data/scImpute_", tissue_name,"*"))
+  system(paste0("rm -R imputation_data/scImpute_", tissue_name,"*"))
   
-  saveRDS(data_dropout, file = paste0("/imputation_data/",
+  # save the data
+  saveRDS(data_scimpute, file = paste0("/imputation_data/",
                                       tissue_name,
                                       "_scimpute_imputation.rds"))
   
@@ -667,7 +668,7 @@ parameterT <- rbind(c(1,1e-7,1e-1),
                     c(1,1e-7,1e-1),
                     c(1,1e-7,1e-2))
 
-# do the imputation
+# do the imputation and save the data in the folder "/imputation_data
 for(i in c(1:8)){
   
   tissue_select <- common_tissue[i]
@@ -744,7 +745,7 @@ for(i in c(1:8)){
                           perplexity = perplexity_value)
   
   
-  # load the imputation results by MAGIC
+  # load the imputation results by MAGIC and calculate the tSNE matrix
   data_magic <- read.table( file = paste0("imputation_data/",
                                           tissue_name,
                                           "_magic_imputation.csv"),
