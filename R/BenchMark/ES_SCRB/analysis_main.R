@@ -43,7 +43,6 @@ library(NbClust)
 library(fpc)
 library(class)
 
-
 source("analysis_library.R")
 
 # Load the data
@@ -266,7 +265,8 @@ write.table(data_bulk,
 # Run DrImpute 
 # ---------------------------------------------------------------------------------
 
-dir.create(file.path("imputation_drimpute_data/"))
+dir.create(file.path("imputation_drimpute_data/"), 
+           showWarnings = FALSE)
 
 data_sc <- as.matrix(fread("/data_all/sc_data_ES.csv"))
 
@@ -279,7 +279,8 @@ saveRDS(extdata, file = "imputation_drimpute_data/data_drimpute_imputation.rds")
 # ---------------------------------------------------------------------------------
 
 # create the folder of the imputation result
-dir.create(file.path("imputation_drimpute_data/"))
+dir.create(file.path("imputation_drimpute_data/"), 
+           showWarnings = FALSE)
 
 # load the data
 data_sc <- as.matrix(fread("/data_all/sc_data_ES.csv"))
@@ -311,8 +312,8 @@ write.table(tmp1, file = "imputation_drimpute_data/data_scimpute_imputation.csv"
 
 # cwd = os.getwd()
 # 
-# if not os.path.exists(cwd+"/magic_data"):
-#   os.makedirs(cwd+"/magic_data")
+# if not os.path.exists(cwd+"/imputation_magic_data"):
+#   os.makedirs(cwd+"/imputation_magic_data")
 # 
 # 
 # X = pd.read_csv(cwd + "/data_all/sc_data_ES.csv",sep = ',',header=None)
@@ -331,7 +332,8 @@ write.table(tmp1, file = "imputation_drimpute_data/data_scimpute_imputation.csv"
 # ---------------------------------------------------------------------------------
 
 # create the folder
-dir.create(file.path("/imputation_scrabble_data/"))
+dir.create(file.path("/imputation_scrabble_data/"), 
+           showWarnings = FALSE)
 
 # load the scRNAseq data
 data_sc <- as.matrix(fread(paste0(cwd,"/data_all/sc_data_ES.csv")))
@@ -392,7 +394,7 @@ data_sc_scimpute <- read.table(file = "imputation_scimpute_data/data_scimpute_im
 data_sc_scimpute <- log10(data_sc_scimpute + 1)
 
 # load the imputed data of MAGIC
-data_sc_magic <- read.table(file = "magic_data/data_magic_imputation.csv", 
+data_sc_magic <- read.table(file = "imputation_magic_data/data_magic_imputation.csv", 
                             header = FALSE, sep = ",", 
                             stringsAsFactors = FALSE)
 
