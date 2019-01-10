@@ -44,6 +44,8 @@ library(fpc)
 library(class)
 
 
+source("analysis_library.R")
+
 # Load the data
 # ---------------------------------------------------------------------------------
 # load the single cell RNAseq data, bulk RNAseq data, and the gene name information
