@@ -265,7 +265,7 @@ write.table(data_bulk,
 # Run DrImpute 
 # ---------------------------------------------------------------------------------
 
-dir.create(file.path("imputation_drimpute_data/"), 
+dir.create(file.path("imputation_data/"), 
            showWarnings = FALSE)
 
 data_sc <- as.matrix(fread("/data_all/sc_data_ES.csv"))
@@ -279,7 +279,7 @@ saveRDS(extdata, file = "imputation_drimpute_data/data_drimpute_imputation.rds")
 # ---------------------------------------------------------------------------------
 
 # create the folder of the imputation result
-dir.create(file.path("imputation_drimpute_data/"), 
+dir.create(file.path("imputation_data/"), 
            showWarnings = FALSE)
 
 # load the data
@@ -291,7 +291,7 @@ scimpute(
   "/data_all/sc_data_ES_scimpute.csv", 
   infile = "csv",           
   outfile = "csv",         
-  out_dir = paste0(cwd1),          
+  out_dir = paste0("imputation_data/"),          
   drop_thre = 0.5,          
   Kcluster = 2,
   ncores = 2)             
@@ -302,7 +302,7 @@ tmp1$X <- NULL
 tmp1[is.na(tmp1)] <- 0
 
 # save the data
-write.table(tmp1, file = "imputation_drimpute_data/data_scimpute_imputation.csv",
+write.table(tmp1, file = "imputation_data/data_scimpute_imputation.csv",
             sep=',',row.names = FALSE, col.names = FALSE)
 
 
@@ -312,8 +312,8 @@ write.table(tmp1, file = "imputation_drimpute_data/data_scimpute_imputation.csv"
 
 # cwd = os.getwd()
 # 
-# if not os.path.exists(cwd+"/imputation_magic_data"):
-#   os.makedirs(cwd+"/imputation_magic_data")
+# if not os.path.exists(cwd+"/imputation_data"):
+#   os.makedirs(cwd+"/imputation_data")
 # 
 # 
 # X = pd.read_csv(cwd + "/data_all/sc_data_ES.csv",sep = ',',header=None)
@@ -324,7 +324,7 @@ write.table(tmp1, file = "imputation_drimpute_data/data_scimpute_imputation.csv"
 # 
 # out_magic = X_magic.T
 # 
-# out_magic.to_csv(cwd+"/magic_data/data_magic_imputation.csv", sep = ',', header= None)
+# out_magic.to_csv(cwd+"/magic_data/data_imputation.csv", sep = ',', header= None)
 
 
 # ---------------------------------------------------------------------------------
@@ -332,7 +332,7 @@ write.table(tmp1, file = "imputation_drimpute_data/data_scimpute_imputation.csv"
 # ---------------------------------------------------------------------------------
 
 # create the folder
-dir.create(file.path("/imputation_scrabble_data/"), 
+dir.create(file.path("/imputation_data/"), 
            showWarnings = FALSE)
 
 # load the scRNAseq data
@@ -358,7 +358,7 @@ result <- scrabble(data,
                    error_inner_threshold = 1e-14)
 
 # save the result
-saveRDS(result, file = "/imputation_scrabble_data/data_scrabble_imputation.rds")
+saveRDS(result, file = "/imputation_data/data_scrabble_imputation.rds")
 
 # ---------------------------------------------------------------------------------
 # Assemble all data: raw data, gold standard data, imputed data
@@ -382,19 +382,19 @@ data_sc_bulk <- read.table(file = "data_all/bulk_data_ES.csv",
 data_sc_bulk <- log10(as.matrix(data_sc_bulk) + 1)
 
 # load the imputed data of DrImpute
-data_sc_drimpute <- readRDS(file = "imputation_drimpute_data/data_drimpute_imputation.rds")
+data_sc_drimpute <- readRDS(file = "imputation_data/data_drimpute_imputation.rds")
 
 data_sc_drimpute <- log10(data_sc_drimpute + 1)
 
 # load the imputed data of scImpute
-data_sc_scimpute <- read.table(file = "imputation_scimpute_data/data_scimpute_imputation.csv", 
+data_sc_scimpute <- read.table(file = "imputation_data/data_scimpute_imputation.csv", 
                                fill = TRUE, header = FALSE, sep = ",", 
                                stringsAsFactors = FALSE)
 
 data_sc_scimpute <- log10(data_sc_scimpute + 1)
 
 # load the imputed data of MAGIC
-data_sc_magic <- read.table(file = "imputation_magic_data/data_magic_imputation.csv", 
+data_sc_magic <- read.table(file = "imputation_data/data_magic_imputation.csv", 
                             header = FALSE, sep = ",", 
                             stringsAsFactors = FALSE)
 
@@ -403,7 +403,7 @@ data_sc_magic <- data_sc_magic[,-1]
 data_sc_magic <- log10(data_sc_magic + 1)
 
 # load the imputed data of SCRABBLE
-data_sc_scrabble <- readRDS(file = "imputation_scrabble_data/data_scrabble_imputation.rds")
+data_sc_scrabble <- readRDS(file = "imputation_data/data_scrabble_imputation.rds")
 
 data_sc_scrabble <- log10(data_sc_scrabble + 1) 
 
@@ -460,7 +460,7 @@ p <- performance_distribution_comparison(gene_only_SCRB, gene_filter, 22, data_d
 main <- grid.arrange(grobs = p[c(1:20)],ncol = 4, top = "main")
 
 ggsave(
-  filename = paste0("gene_performance_compare_1.pdf"),
+  filename = paste0("Figure_gene_performance_compare_1.pdf"),
   plot = main,
   width = 14,
   height = 20
@@ -470,7 +470,7 @@ ggsave(
 main <- grid.arrange(grobs = p[c(21:40)],ncol = 4, top = "main")
 
 ggsave(
-  filename = paste0("gene_performance_compare_2.pdf"),
+  filename = paste0("Figure_gene_performance_compare_2.pdf"),
   plot = main,
   width = 14,
   height = 20
@@ -480,7 +480,7 @@ ggsave(
 main <- grid.arrange(grobs = p[c(41:56)],ncol = 4, top = "main")
 
 ggsave(
-  filename = paste0("gene_performance_compare_3.pdf"),
+  filename = paste0("Figure_gene_performance_compare_3.pdf"),
   plot = main,
   width = 14,
   height = 20
