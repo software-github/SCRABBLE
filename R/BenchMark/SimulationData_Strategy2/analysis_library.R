@@ -106,16 +106,17 @@ run_drimpute <- function(dropout_index, rand_seed){
   # seed_value: the random seed
   
   # create the folder
-  dir.create(file.path("/imputation_drimpute_data/"))
+  dir.create(file.path("/imputation_drimpute_data/"), 
+             stringsAsFactors = FALSE)
   
   # load the data
-  data_sc = as.matrix(fread(paste0(cwd,"/data_all/data_raw_",dropout_index,"_",rand_seed,".csv")))
+  data_sc = as.matrix(fread(paste0("/data_all/data_raw_",dropout_index,"_",rand_seed,".csv")))
   
   # run the imputation
   extdata = DrImpute(data_sc)
   
   # save the data
-  saveRDS(extdata, file = paste0(cwd1,"data_",dropout_index,"_",rand_seed,"_drimpute_imputation.rds"))
+  saveRDS(extdata, file = paste0("/imputation_drimpute_data/data_",dropout_index,"_",rand_seed,"_drimpute_imputation.rds"))
   
 }
 
@@ -127,8 +128,11 @@ run_scimpute <- function(dropout_index, rand_seed){
   # seed_value: the random seed
   
   # create the folder
-  dir.create(file.path("/imputation_scimpute_data/"), showWarnings = FALSE)
-  dir.create(file.path("/temp_scimpute_data/"), showWarnings = FALSE)
+  dir.create(file.path("/imputation_scimpute_data/"), 
+             showWarnings = FALSE)
+  
+  dir.create(file.path("/temp_scimpute_data/"), 
+             showWarnings = FALSE)
   
   # load the data
   data_sc = as.matrix(fread(paste0("/data_all/data_raw_",
@@ -179,14 +183,14 @@ run_scimpute <- function(dropout_index, rand_seed){
 # 
 # cwd = os.getcwd()
 # 
-# if not os.path.exists(cwd+"/magic_data"):
-#   os.makedirs(cwd+"/magic_data")
+# if not os.path.exists(cwd+"/imputation_magic_data"):
+#   os.makedirs(cwd+"/imputation_magic_data")
 # 
 # X =pd.read_csv(cwd + "/data_all/data_raw_"+str(dropout_value)+"_"+str(seed_value)+".csv",sep = ',')
 # magic_operator = magic.MAGIC()
 # X_magic = magic_operator.fit_transform(X.T)
 # out_magic = X_magic.T
-# out_magic.to_csv(cwd+"/magic_data/magic_"+str(dropout_value)+"_"+str(seed_value)+".csv", sep = ',', header= None)
+# out_magic.to_csv(cwd+"/imputation_magic_data/magic_"+str(dropout_value)+"_"+str(seed_value)+".csv", sep = ',', header= None)
 # ----------------------------------------------------------
 
 # run SCRABBLE
@@ -225,7 +229,7 @@ run_scrabble <- function(dropout_index, rand_seed){
                     error_inner_threshold = 1e-5)
   
   # save the data
-  saveRDS(result, file = paste0(cwd1,"data_",i,"_",j,"_",k,"_scrabble_imputation.rds"))
+  saveRDS(result, file = paste0("/imputation_scrabble_data/data_",i,"_",j,"_",k,"_scrabble_imputation.rds"))
   
 }
 
@@ -257,7 +261,7 @@ get_data_HF <- function(dropout_index, rand_seed){
                                         rand_seed,"_scimpute_imputation.rds"))
   
   # load the imputed data by MAGIC
-  data_magic = as.matrix(fread(paste0("/magic_data/magic_",
+  data_magic = as.matrix(fread(paste0("/imputation_magic_data/magic_",
                                       dropout_index,"_",
                                       rand_seed,".csv")))
   data_magic = data_magic[,-1]
@@ -307,52 +311,75 @@ calculate_error <- function(dropout_index, rand_seed){
   data = get_data_HF(dropout_index, rand_seed)
   
   data_true  = data$data_true
+  
   data_dropout = data$data_raw
+  
   data_drimpute = data$data_drimpute
+  
   data_scimpute = data$data_scimpute
+  
   data_magic = data$data_magic
+  
   data_scrabble = data$data_scrabble
   
   error = matrix(0, nrow = 6, ncol = 1)
+  
   error[1] = norm(data_dropout - data_true, type = "2")
+  
   error[2] = norm(data_drimpute - data_true, type = "2")
+  
   error[3] = norm(data_scimpute - data_true, type = "2")
+  
   error[4] = norm(data_magic - data_true, type = "2")
+  
   error[5] = norm(data_scrabble - data_true, type = "2")
+  
   error[6] = 1 - nnzero(data_dropout)/length(data_dropout)
   
   # gene-gene correlation
   # true data
   data_true_gene = cor(t(data_true), method = "pearson")
+  
   data_true_gene[is.na(data_true_gene)] = 0
   
   # dropout data
   data_dropout_gene = cor(t(data_dropout), method = "pearson")
+  
   data_dropout_gene[is.na(data_dropout_gene)] = 0
   
   # DrImpute data
   data_drimpute_gene = cor(t(data_drimpute), method = "pearson")
+  
   data_drimpute_gene[is.na(data_drimpute_gene)] = 0
   
   # scImpute data
   data_scimpute_gene = cor(t(data_scimpute), method = "pearson")
+  
   data_scimpute_gene[is.na(data_scimpute_gene)] = 0
   
   # MAGIC data
   data_magic_gene = cor(t(data_magic), method = "pearson")
+  
   data_magic_gene[is.na(data_magic_gene)] = 0
   
   # SCRABBLE data
   data_scrabble_gene = cor(t(data_scrabble), method = "pearson")
+  
   data_scrabble_gene[is.na(data_scrabble_gene)] = 0
   
   
   error_gene = matrix(0, nrow = 6, ncol = 1)
+  
   error_gene[1] = calculate_similarity(data_true_gene, data_dropout_gene) 
+  
   error_gene[2] = calculate_similarity(data_true_gene, data_drimpute_gene)
+  
   error_gene[3] = calculate_similarity(data_true_gene, data_scimpute_gene)
+  
   error_gene[4] = calculate_similarity(data_true_gene, data_magic_gene)
+  
   error_gene[5] = calculate_similarity(data_true_gene, data_scrabble_gene)
+  
   error_gene[6] = 1 - nnzero(data_dropout)/length(data_dropout)
   
   
@@ -360,40 +387,55 @@ calculate_error <- function(dropout_index, rand_seed){
   
   # true data
   data_true_cell = cor(data_true, method = "pearson")
+  
   data_true_cell[is.na(data_true_cell)] = 0
   
   # dropout data
   data_dropout_cell = cor(data_dropout, method = "pearson")
+  
   data_dropout_cell[is.na(data_dropout_cell)] = 0
   
   # DrImpute data
   data_drimpute_cell = cor(data_drimpute, method = "pearson")
+  
   data_drimpute_cell[is.na(data_drimpute_cell)] = 0
   
   # scImpute data
   data_scimpute_cell = cor(data_scimpute, method = "pearson")
+  
   data_scimpute_cell[is.na(data_scimpute_cell)] = 0
   
   # MAGIC data
   data_magic_cell = cor(data_magic, method = "pearson")
+  
   data_magic_cell[is.na(data_magic_cell)] = 0
   
   # SCRABBLE
   data_scrabble_cell = cor(data_scrabble, method = "pearson")
+  
   data_scrabble_cell[is.na(data_scrabble_cell)] = 0
   
   error_cell = matrix(0, nrow = 6, ncol = 1)
+  
   error_cell[1] = calculate_similarity(data_true_cell, data_dropout_cell)
+  
   error_cell[2] = calculate_similarity(data_true_cell, data_drimpute_cell)
+  
   error_cell[3] = calculate_similarity(data_true_cell, data_scimpute_cell)
+  
   error_cell[4] = calculate_similarity(data_true_cell, data_magic_cell)
+  
   error_cell[5] = calculate_similarity(data_true_cell, data_scrabble_cell)
+  
   error_cell[6] = 1 - nnzero(data_dropout)/length(data_dropout)
   
   # define the error as a list
   result <- list()
+  
   result$error <- error
+  
   result$error_cell <- error_cell
+  
   result$error_gene <- error_gene
   
   return(result)
@@ -924,7 +966,9 @@ plot_cor_p <- function(data, name){
   limit = c(min(c(data1)),max(c(data1)))
   
   myPalette = colorRampPalette(rev(brewer.pal(11, "Spectral")))
+  
   colnames(data) = NULL
+  
   rownames(data) = NULL
 
   # prepare the plot data
@@ -970,38 +1014,50 @@ plot_cor_HF <- function(dropout_index, rand_seed){
   
   # set up the data
   data_true  = data$data_true
+  
   data_dropout = data$data_raw
+  
   data_drimpute = data$data_drimpute
+  
   data_scimpute = data$data_scimpute
+  
   data_magic = data$data_magic
+  
   data_scrabble = data$data_scrabble
   
   # gene-gene correlation
   # true data
   data_true_gene = cor(t(data_true), method = "pearson")
+  
   data_true_gene[is.na(data_true_gene)] = 0
   
   # dropout data
   data_dropout_gene = cor(t(data_dropout), method = "pearson")
+  
   data_dropout_gene[is.na(data_dropout_gene)] = 0
   
   # DrImpute data
   data_drimpute_gene = cor(t(data_drimpute), method = "pearson")
+  
   data_drimpute_gene[is.na(data_drimpute_gene)] = 0
   
   # scImpute data
   data_scimpute_gene = cor(t(data_scimpute), method = "pearson")
+  
   data_scimpute_gene[is.na(data_scimpute_gene)] = 0
   
   # MAGIC data
   data_magic_gene = cor(t(data_magic), method = "pearson")
+  
   data_magic_gene[is.na(data_magic_gene)] = 0
   
   # SCRABBLE data
   data_scrabble_gene = cor(t(data_scrabble), method = "pearson")
+  
   data_scrabble_gene[is.na(data_scrabble_gene)] = 0
   
   p <- list()
+  
   pl <- list()
   
   pl[[1]] <- plot_cor_p(data_true_gene,"Gene: True Data")
@@ -1021,26 +1077,32 @@ plot_cor_HF <- function(dropout_index, rand_seed){
   # cell-cell correlation
   # true data
   data_true_cell = cor(data_true, method = "pearson")
+  
   data_true_cell[is.na(data_true_cell)] = 0
   
   # dropout data
   data_dropout_cell = cor(data_dropout, method = "pearson")
+  
   data_dropout_cell[is.na(data_dropout_cell)] = 0
   
   # DrImpute data
   data_drimpute_cell = cor(data_drimpute, method = "pearson")
+  
   data_drimpute_cell[is.na(data_drimpute_cell)] = 0
   
   # scImpute data
   data_scimpute_cell = cor(data_scimpute, method = "pearson")
+  
   data_scimpute_cell[is.na(data_scimpute_cell)] = 0
   
   # MAGIC data
   data_magic_cell = cor(data_magic, method = "pearson")
+  
   data_magic_cell[is.na(data_magic_cell)] = 0
   
   # SCRABBLE
   data_scrabble_cell = cor(data_scrabble, method = "pearson")
+  
   data_scrabble_cell[is.na(data_scrabble_cell)] = 0
   
   pl <- list()

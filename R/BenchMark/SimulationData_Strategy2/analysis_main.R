@@ -52,18 +52,23 @@ source("analysis_library.R")
 data_bulk <- read.table(file = "data/data_bulk.txt", header = TRUE)
 
 sample_name_df <- read.table(file = "data/sample_info.csv", header = FALSE)
+
 cell_type <- unique(as.character(sample_name_df$V1))
+
 sample_name <- as.character(sample_name_df$V1)
 
 gene_name <- read.table(file = "data/mouse_gene_id.txt", sep = ",")
 
 # filter out the genes with low expression 
 index <- rowSums(name_file > 1) > 1
+
 data <- log10(name_file[index,] + 1)
+
 gene_name <- gene_name[index,]
 
 # To reduce the computation cost, we sample 5000 genes from those all genes
 data1 <- as.matrix(data[sample(1:dim(data)[1],5000),])
+
 # ----------------------------------------------------------------------------
 
 
@@ -79,11 +84,13 @@ save(data,data1, cell_type, sample_name, data_noise, file = "data_raw.RData")
 # HPC to generate the simulation which could reduce the running time
 # ----------------------------------------------------------------------------
 for(dropout_index in c(1:4) ){
+  
   for(seed_value in c(1:100)){
     
     run_generate_data(dropout_index, seed_value)
     
   }
+  
 }
 # ----------------------------------------------------------------------------
 
@@ -91,11 +98,13 @@ for(dropout_index in c(1:4) ){
 # HPC to generate the simulation which could reduce the running time
 # ----------------------------------------------------------------------------
 for(dropout_index in c(1:4) ){
+  
   for(seed_value in c(1:100)){
     
     run_drimpute(dropout_index, rand_seed)
     
   }
+  
 }
 # ----------------------------------------------------------------------------
 
@@ -103,11 +112,13 @@ for(dropout_index in c(1:4) ){
 # HPC to generate the simulation which could reduce the running time
 # ----------------------------------------------------------------------------
 for(dropout_index in c(1:4) ){
+  
   for(seed_value in c(1:100)){
     
     run_scimpute(dropout_index, rand_seed)
     
   }
+  
 }
 # ----------------------------------------------------------------------------
 
@@ -115,11 +126,13 @@ for(dropout_index in c(1:4) ){
 # HPC to generate the simulation which could reduce the running time
 # ----------------------------------------------------------------------------
 for(dropout_index in c(1:4) ){
+  
   for(seed_value in c(1:100)){
     
     run_scrabble(dropout_index, rand_seed)
     
   }
+  
 }
 # ----------------------------------------------------------------------------
 
@@ -127,6 +140,7 @@ for(dropout_index in c(1:4) ){
 # HPC to generate the simulation which could reduce the running time
 # ----------------------------------------------------------------------------
 for(dropout_index in c(1:4) ){
+  
   for(seed_value in c(1:100)){
     
     result <- run_error(dropout_index, rand_seed)
@@ -140,6 +154,7 @@ for(dropout_index in c(1:4) ){
     )
     
   }
+  
 }
 # ----------------------------------------------------------------------------
 
@@ -147,13 +162,17 @@ for(dropout_index in c(1:4) ){
 # HPC to generate the simulation which could reduce the running time
 # ----------------------------------------------------------------------------
 error_list <- list()
+
 error_cell_list <- list()
+
 error_gene_list <- list()
 
 for(i in c(1:4)){
   
   error_matrix <- c()
+  
   error_cell_matrix <- c()
+  
   error_gene_matrix <- c()
   
   for(j in c(1:100)){
@@ -170,13 +189,17 @@ for(i in c(1:4)){
   }
   
   error_list[[i]] <- error_matrix
+  
   error_cell_list[[i]] <- error_cell_matrix
+  
   error_gene_list[[i]] <- error_gene_matrix
   
 }
 
 saveRDS(error_list,file = "error_all.rds")
+
 saveRDS(error_cell_list,file = "error_all_cell.rds")
+
 saveRDS(error_gene_list,file = "error_all_gene.rds")
 # ----------------------------------------------------------------------------
 
@@ -184,27 +207,41 @@ saveRDS(error_gene_list,file = "error_all_gene.rds")
 # ----------------------------------------------------------------------------
 # load the data
 error_list <- readRDS(file = "error_all.rds")
+
 error_cell_list <- readRDS(file = "error_all_cell.rds")
+
 error_gene_list <- readRDS(file = "error_all_gene.rds")
 
 # define the graph list
 p <- list()
 
 p[[1]] <- plot_comparison(error_list[[1]], "Error", 1200, 80)
+
 p[[2]] <- plot_comparison(error_cell_list[[1]], "Correlation", 1,0.1)
+
 p[[3]] <- plot_comparison(error_gene_list[[1]], "Correlation",1,0.1)
+
 p[[4]] <- plot_comparison(error_list[[2]], "Error",1200,80)
+
 p[[5]] <- plot_comparison(error_cell_list[[2]], "Correlation",1,0.1)
+
 p[[6]] <- plot_comparison(error_gene_list[[2]], "Correlation",1,0.1)
+
 p[[7]] <- plot_comparison(error_list[[3]], "Error",1200,80)
+
 p[[8]] <- plot_comparison(error_cell_list[[3]], "Correlation",1,0.1)
+
 p[[9]] <- plot_comparison(error_gene_list[[3]], "Correlation",1,0.1)
+
 p[[10]] <- plot_comparison(error_list[[4]], "Error",1200,80)
+
 p[[11]] <- plot_comparison(error_cell_list[[4]], "Correlation",1,0.1)
+
 p[[12]] <- plot_comparison(error_gene_list[[4]], "Correlation",1,0.1)
 
 # save the figures
 main <- grid.arrange(grobs = p,ncol = 3)
+
 ggsave(filename="Figure_HF_error.pdf",
        plot = main,
        width = 18,
