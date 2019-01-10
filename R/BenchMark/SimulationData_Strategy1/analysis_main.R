@@ -43,6 +43,7 @@ library(NbClust)
 library(fpc)
 library(class)
 
+source("analysis_library.R")
 
 # the following script is to generate the simulation data. Here we use 
 # HPC to generate the simulation which could reduce the running time
