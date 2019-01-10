@@ -1,5 +1,5 @@
 # This is the main R file to generate the results related our manuscript
-# figure 7 and the supplementary figures related to figure 7.
+# figure 6 and the supplementary figures related to figure 6.
 # Please contact Tao Peng: pengt@email.chop.edu if you have any questions 
 # about the scripts or data
 
@@ -547,9 +547,7 @@ common_tissue <- c("FetalBrain", "SmallIntestine", "Kidney", "Liver",
 
 for(i in c(1:8)){
   
-  tissue_name <- common_tissue[i]
-  
-  get_data(tissue_name, data_tissue_file)
+  get_data(common_tissue[i], data_tissue_file)
   
 }
 
@@ -566,7 +564,7 @@ for(i in c(1:8)){
   
   tissue_name <- common_tissue[i]
   
-  data <- readRDS(paste0(cwd,"/data_sc_bulk/",tissue_name,"_imputation.rds"))
+  data <- readRDS(paste0("/data_sc_bulk/",tissue_name,"_imputation.rds"))
   
   extdata <- DrImpute(data[[1]]) 
   
@@ -590,7 +588,7 @@ for(i in c(1:8)){
   
   tissue_name <- common_tissue[i]
   
-  data <- readRDS(paste0(cwd,"/data_sc_bulk/",tissue_name,"_imputation.rds"))
+  data <- readRDS(paste0("/data_sc_bulk/",tissue_name,"_imputation.rds"))
   
   tmp <- as.matrix(data[[1]])
   
@@ -615,7 +613,7 @@ for(i in c(1:8)){
   
   data_dropout$X <- NULL
   
-  system(paste0("rm scImpute_", tissue_name,"*"))
+  system(paste0("rm imputation_data/scImpute_", tissue_name,"*"))
   
   saveRDS(data_dropout, file = paste0("/imputation_data/",
                                       tissue_name,
@@ -636,7 +634,7 @@ for(i in c(1:8)){
 # cwd = os.getwd()
 # 
 # def run_magic_singlecell(tissue_name):
-#   filename = tissue_name+'_scimpute.csv'
+#   filename = '/imputation_data/'+tissue_name+'_scimpute.csv'
 #   X = pd.read_csv(filename)
 #   magic_operator = magic.MAGIC()
 #   X_magic = magic_operator.fit_transform(X.T)
@@ -659,21 +657,21 @@ common_tissue <- c("FetalBrain", "SmallIntestine", "Kidney", "Liver",
                    "Spleen", "Placenta", "FetalLiver", "Lung")
 
 # parameter settings
-parameterT <- rbind(c(1,1e-7,1e-6),
-                    c(1,1e-7,1e-5),
-                    c(1,1e-7,1e-4),
-                    c(1,1e-7,1e-3),
-                    c(1,1e-7,1e-2),
+parameterT <- rbind(c(1,1e-7,1e-1),
+                    c(1,1e-7,1e0),
+                    c(1,1e-7,1e0),
                     c(1,1e-7,1e-1),
-                    c(1,1e-7,1e-0),
-                    c(1,1e-7,1e1))
+                    c(1,1e-7,1e0),
+                    c(1,1e-7,1e-1),
+                    c(1,1e-7,1e-1),
+                    c(1,1e-7,1e-2))
 
 # do the imputation
 for(i in c(1:8)){
   
   tissue_select <- common_tissue[i]
   
-  data <- readRDS(paste0(cwd,"/data_sc_bulk/",tissue_select,"_imputation.rds"))
+  data <- readRDS(paste0("/data_sc_bulk/",tissue_select,"_imputation.rds"))
   
   parameter <- parameterT[i,]
   
@@ -770,7 +768,7 @@ for(i in c(1:8)){
                           initial_dims = initial_dims_value, 
                           perplexity = perplexity_value)
   
-  saveRDS(data_tsne, file = paste0(tissue_name,"_TSNE.rds"))
+  saveRDS(data_tsne, file = paste0("data_all/",tissue_name,"_TSNE.rds"))
   
 }
 
