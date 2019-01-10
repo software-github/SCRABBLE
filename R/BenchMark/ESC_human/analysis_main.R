@@ -42,6 +42,8 @@ library(NbClust)
 library(fpc)
 library(class)
 
+source("analysis_library.R")
+
 # load the data
 # ---------------------------------------------------------------------------------
 data_sc <- fread(file = "data_all/data_sc_TPM.csv", 
