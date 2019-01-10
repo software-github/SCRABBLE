@@ -1,5 +1,5 @@
 # This is the main R file to generate the results related our manuscript
-# figure 6 and the supplementary figures related to figure 6.
+# figure 7 and the supplementary figures related to figure 7.
 # Please contact Tao Peng: pengt@email.chop.edu if you have any questions 
 # about the scripts or data
 
@@ -540,7 +540,7 @@ save(data_select,meta_data,file = paste0("data_sc_bulk/sc_",tissue_name,".RData"
 # ---------------------------------------------------------------------------------
 
 # Define the tissue name 
-data_tissue_file <- read.table(file = "bulk_data_name.txt", sep = ",")
+data_tissue_file <- read.table(file = "data/bulk_data_name.txt", sep = ",")
 
 common_tissue <- c("FetalBrain", "SmallIntestine", "Kidney", "Liver", 
                    "Spleen", "Placenta", "FetalLiver", "Lung")
@@ -601,15 +601,15 @@ for(i in c(1:8)){
   )
   
   scimpute(
-    paste0(tissue_name,"_scimpute.csv"),
+    paste0("imputation_data/",tissue_name,"_scimpute.csv"),
     infile = "csv",           
     outfile = "csv",          
-    out_dir = paste0("scImpute_", tissue_name, "_"),
+    out_dir = paste0("imputation_data/scImpute_", tissue_name, "_"),
     drop_thre = 0.5,          
     Kcluster = 2,
     ncores = 2)             
   
-  data_dropout <- read.table( file = paste0("scImpute_", tissue_name,
+  data_dropout <- read.table( file = paste0("imputation_data/scImpute_", tissue_name,
                                             "_scimpute_count.csv") ,
                               header = TRUE, sep=",")
   
