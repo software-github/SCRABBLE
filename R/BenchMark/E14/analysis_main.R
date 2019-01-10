@@ -43,6 +43,8 @@ library(NbClust)
 library(fpc)
 library(class)
 
+source("analysis_library.R")
+
 # Load the data
 # ---------------------------------------------------------------------------------
 # load the bulk RNAseq data
