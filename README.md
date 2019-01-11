@@ -33,8 +33,7 @@ data_true <- data[[3]]
 
 parameter <- c(1,1e-6,1e-4)
 
-result <- scrabble(data1,
-                   parameter = parameter)
+result <- scrabble(data, parameter = parameter)
 ```                   
 ## MATLAB Version
 
