@@ -5,90 +5,12 @@ date: "5/18/2018"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-# setwd("/mnt/isilon/tan_lab/pengt/Documents/Chop/Revision_Imputation/SCRABBLE/R_package/code")
-# library(rsvd)
-# library("corpcor")
-# library(rARPACK)
-# library(pracma)
-# library(rapport)
-.libPaths("/mnt/isilon/cbmi/tan_lab/pengt/Documents/R_3_5")
-library(SCRABBLE)
-library(VennDiagram)
-library(Rtsne)
-library(dplyr)
-library(DT)
-library(ggpubr)
-library(ggsignif)
-library(biomaRt)
-library(scatterplot3d)
-library(R.matlab)
-library(scImpute)
-library(ggplot2)
-library(reshape2)
-library(ggfortify)
-library(gridExtra)
-library(viridis)
-library(pheatmap)
-library(RColorBrewer)
-library(dendsort)
-library(entropy)
-library(DrImpute)
-library(Rmagic)
-```
-
-```{r}
-data_sc <- read.csv(file = "/mnt/isilon/tan_lab/pengt/Documents/Chop/Revision_Imputation/SCRABBLE/R_package/code/test_data_sc.csv",header = F)
-data_bulk <- read.csv(file = "/mnt/isilon/tan_lab/pengt/Documents/Chop/Revision_Imputation/SCRABBLE/R_package/code/test_data_bulk.csv",header = F)
-data_true <- read.csv(file = "/mnt/isilon/tan_lab/pengt/Documents/Chop/Revision_Imputation/SCRABBLE/R_package/code/test_data_true.csv",header = F)
-```
-
-```{r}
-data1 <- list()
-data1[[1]] <- data$data_dropout
-data1[[2]] <- data$data_bulk
-```
-
-
-```{r}
-parameter <- c(10,1e-5,1e-4)
-nIter <- 20
-```
-
-```{r}
-result <- scrabble(data1,
-                   parameter = parameter, 
-                   nIter = 30,
-                   error_out_threshold = 1e-7, 
-                   nIter_inner = 100,
-                   error_inner_threshold = 1e-5)
-```
-
-```{r}
-data_matlab_tmp <- readMat('data_result_4.mat')
-data_matlab <- data_matlab_tmp$dataRecovered
-
-data1 <- readMat('demo_data_HF.mat')
-
-```
-
-```{r,fig.height=3,fig.width=10}
-pl <- list()
-pl[[1]] <- plot_data(log10(data_true + 1), 'True Data')
-pl[[2]] <- plot_data(log10(result+1),'Imputed Data')
-pl[[3]] <- plot_data(log10(data_sc+1),'Dropout Data')
-pl[[4]] <- plot_data(log10(data_matlab + 1), 'Matlab Data')
-p <- grid.arrange(grobs = pl,ncol = 4)
-```
-
-
-
 # This is used to generate the help file
 ```{r}
 devtools::document(roclets=c('rd', 'vignette'))
 # generate the manual 
 system("R CMD Rd2pdf . --title=Package SCRABBLE --output=man/manual.pdf --force --no-clean --internals")
 # generate the file
-devtools::use_vignette("my-vignette")
+devtools::build_vignettes()
 ```
 

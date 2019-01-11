@@ -1,14 +1,15 @@
 # plot the figures of data
 plot_data <- function(data,name){
-  limit <- c(0,4)
+  limit <- c(0,5)
   myPalette <- colorRampPalette(rev(brewer.pal(11, "Spectral")))
+  print(dim(data))
   colnames(data) <- NULL
   rownames(data) <- NULL
   longData<-melt(as.matrix(data))
   pl <- ggplot(longData, aes(x = Var2, y = Var1)) +
     geom_raster(aes(fill=value)) +
-    scale_colour_gradient2(limits=c(0, 4)) +
-    scale_fill_gradient2(limits=c(0, 4),low = "blue", mid = "white",high = "red", midpoint = 2) +
+    scale_colour_gradient2(limits=c(0, 5)) +
+    scale_fill_gradientn(colours = c("white", "blue", "red"), values = c(0,0.6,1)) +
     theme_bw()  +
     scale_y_discrete(name ="Genes") +
     ggtitle(name) +
@@ -18,10 +19,11 @@ plot_data <- function(data,name){
           panel.grid.minor = element_blank(),
           panel.background = element_blank(),
           line = element_blank(),
-          plot.title = element_text(family = "Helvetica", face = "bold", size = (12)),
-          axis.title = element_text(family = "Helvetica", size = (10)),
+          plot.title = element_text(family = "Helvetica", face = "bold", size = (8)),
+          axis.title = element_text(family = "Helvetica", size = (6)),
           axis.text.x = element_blank(),
           axis.text.y = element_blank()) +
-    theme(legend.text=element_text(size=10),legend.title = element_text(size = 10))
+    theme(legend.text=element_text(size=6),legend.title = element_text(size = 6))
+
   return(pl)
 }

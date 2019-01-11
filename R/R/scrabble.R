@@ -10,30 +10,28 @@
 #' the objective function.
 #'
 #'
-#' @param data the input data list. There are two cases SCRABBLE could handle. The first one is that the input
-#' data is a list of two datasets, scRNAseq and bulk RNAseq. The second one is scRNAseq only. The third one is
-#' the parameter for penalty term
+#' @param data the input data list. The input
+#' data is a list of two datasets, scRNAseq and bulk RNAseq.
 #'
 #' @param parameter the vector of parameters. The first parameter is the value of alpha in the mathematical model
-#' and the second one is the value of beta in the mathematical model.
+#' , the second one is the value of beta in the mathematical model.
 #'
-#' @param nIter the maximum iterations.
+#' @param nIter the maximum iterations, the default is 60.
 #'
 #' @param error_out_threshold the threshold of the error between the current imputed matrix and the previous one.
 #' Default is 1e-5.
 #'
-#' @param nIter_inner the maximum interations of calculating the sub-optimization problem. Default is 5.
+#' @param nIter_inner the maximum interations of calculating the sub-optimization problem. Default is 60.
 #'
 #' @param error_inner_threshold the threshold of the error between the current updated matrix and the previous one.
 #' Default is 1e-5.
 #'
 #' @examples
 #' # Set up the parameter used in SCRABBLE
-#' parameter <- c(100,2e-7)
-#' nIter <- 100
+#' parameter <- c(1, 1e-6, 1e-4)
 #'
 #' # Run SCRABLE
-#' result <- scrabble(data,parameter = parameter, nIter = nIter)
+#' result <- scrabble(data,parameter = parameter)
 #'
 #' @return A data matrix with the same size of the input scRNAseq data
 #'
@@ -44,9 +42,9 @@
 #'
 scrabble <- function(data,
                      parameter,
-                     nIter,
-                     error_out_threshold = 1e-5,
-                     nIter_inner = 20,
+                     nIter = 60,
+                     error_out_threshold = 1e-7,
+                     nIter_inner = 100,
                      error_inner_threshold = 1e-5){
 
   # Use the sparse matrix to store the matrix
