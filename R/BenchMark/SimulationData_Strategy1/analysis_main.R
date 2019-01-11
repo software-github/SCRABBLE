@@ -45,9 +45,11 @@ library(class)
 
 source("analysis_library.R")
 
+
 # the following script is to generate the simulation data. Here we use 
 # HPC to generate the simulation which could reduce the running time
 for(dropout_index in c(1:3) ){
+  
   for(seed_value in c(1:100)){
     
     generate_save_data(dropout_index, seed_value)
@@ -63,26 +65,31 @@ for(dropout_index in c(1:3) ){
 # the following script is to impute data. Here we use 
 # HPC to impute the data using drimpute which could reduce the running time
 for(dropout_index in c(1:3) ){
+  
   for(seed_value in c(1:100)){
     
     run_drimpute(dropout_index, seed_value)
     
   }
+  
 }
 
 # the following script is to impute data. Here we use 
 # HPC to impute the data using scimpute which could reduce the running time
 for(dropout_index in c(1:3) ){
+  
   for(seed_value in c(1:100)){
     
     run_scimpute(dropout_index, seed_value)
     
   }
+  
 }
 
 # the following script is to impute data. Here we use 
 # HPC to impute the data using scrabble which could reduce the running time
 for(dropout_index in c(1:3) ){
+  
   for(seed_value in c(1:100)){
     
     run_scrabble(dropout_index, seed_value)
@@ -93,6 +100,7 @@ for(dropout_index in c(1:3) ){
 # the following script is to calculate the errors. Here we use 
 # HPC to impute the data using scrabble which could reduce the running time
 for(dropout_index in c(1:3) ){
+  
   for(seed_value in c(1:100)){
     
     result <- calculate_error_splatter(drop_index, seed_value)
@@ -104,35 +112,50 @@ for(dropout_index in c(1:3) ){
     )
     
   }
+  
 }
 
 # Gather the errors
 # -----------------
 error_list <- list()
+
 error_cell_list <- list()
+
 error_gene_list <- list()
 
 # gather the error from the data from different dropout rates
 for(i in c(1:3)){
   error_matrix <- c()
+  
   error_cell_matrix <- c()
+  
   error_gene_matrix <- c()
+  
   for(j in c(1:100)){
+    
     tmp <- readRDS(file = paste0("error_data/error_",i,"_",j,".rds"))
+    
     error_matrix <- cbind(error_matrix,as.matrix(tmp$error))
+    
     error_cell_matrix <- cbind(error_cell_matrix,as.matrix(tmp$error_cell))
+    
     error_gene_matrix <- cbind(error_gene_matrix,as.matrix(tmp$error_gene))
+    
   }
   
   error_list[[i]] <- error_matrix
+  
   error_cell_list[[i]] <- error_cell_matrix
+  
   error_gene_list[[i]] <- error_gene_matrix
   
 }
 
 # save the errors
 saveRDS(error_list,file = "error_all.rds")
+
 saveRDS(error_cell_list,file = "error_all_cell.rds")
+
 saveRDS(error_gene_list,file = "error_all_gene.rds")
 # ------
 
@@ -140,7 +163,9 @@ saveRDS(error_gene_list,file = "error_all_gene.rds")
 # ----------------------------------------------------------------------------
 # load the error data
 error_list <- readRDS(file = "error_all.rds")
+
 error_cell_list <- readRDS(file = "error_all_cell.rds")
+
 error_gene_list <- readRDS(file = "error_all_gene.rds")
 
 
@@ -149,17 +174,23 @@ p <- list()
 
 # Dropout rate: 71%
 p[[1]] <- plot_comparison(error_list[[1]], "Error", 1400, 140)
+
 p[[2]] <- plot_comparison(error_cell_list[[1]], "Correlation", 1, 0.1)
+
 p[[3]] <- plot_comparison(error_gene_list[[1]], "Correlation", 0.4, 0.04)
 
 # Dropout rate: 83%
 p[[4]] <- plot_comparison(error_list[[2]], "Error", 1800, 180)
+
 p[[5]] <- plot_comparison(error_cell_list[[2]], "Correlation", 1, 0.1)
+
 p[[6]] <- plot_comparison(error_gene_list[[2]], "Correlation", 0.3, 0.03)
 
 # Dropout rate:87%
 p[[7]] <- plot_comparison(error_list[[3]], "Error",1800,180)
+
 p[[8]] <- plot_comparison(error_cell_list[[3]], "Correlation", 1, 0.1)
+
 p[[9]] <- plot_comparison(error_gene_list[[3]], "Correlation", 0.2, 0.02)
 
 # save the PDF files

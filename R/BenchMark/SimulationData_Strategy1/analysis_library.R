@@ -21,10 +21,10 @@ generate_simulation_splatter <- function(dropout_index, seed_value, nGenes = 800
   dropout_mid = c(4, 5, 5.5)
   
   # determine if it is a good parameter
-  if(drop_index > length(dropout_mid)){
+  if(dropout_index > length(dropout_mid)){
     
     stop(
-      paste0('The drop_index shold not be greater than ', 
+      paste0('The dropout_index shold not be greater than ', 
              length(dropout_mid), 
              ' . Please input a proper one.\n')
     )
@@ -40,6 +40,7 @@ generate_simulation_splatter <- function(dropout_index, seed_value, nGenes = 800
   
   # genereate the cpm levels of the true simulation data
   data_true = cpm(sim@assays$data$TrueCounts)
+  
   data_dropout = data_true
   
   # generate the dropout data based on the counts in sim
@@ -79,7 +80,7 @@ generate_simulation_splatter <- function(dropout_index, seed_value, nGenes = 800
 generate_save_data <- function(dropout_index, seed_value){
   
   # Parameter in the function
-  # drop_index: the index of dropout_mid to control the dropout rate
+  # dropout_index: the index of dropout_mid to control the dropout rate
   # seed_value: the random seed
   
   # generate the simulation data
@@ -90,7 +91,7 @@ generate_save_data <- function(dropout_index, seed_value){
   
   # save the data as RDS format
   saveRDS(data_simulation, 
-          file = paste0('simulation_data/simulation_data_drop_index_',
+          file = paste0('simulation_data/simulation_data_dropout_index_',
                         dropout_index, 
                         '_seed_', 
                         seed_value,
@@ -103,11 +104,11 @@ generate_save_data <- function(dropout_index, seed_value){
 run_drimpute <- function(dropout_index, seed_value){
   
   # Parameter in the function
-  # drop_index: the index of dropout_mid to control the dropout rate
+  # dropout_index: the index of dropout_mid to control the dropout rate
   # seed_value: the random seed
   
   # load the raw data
-  data <- readRDS(file = paste0('simulation_data/simulation_data_drop_index_',
+  data <- readRDS(file = paste0('simulation_data/simulation_data_dropout_index_',
                                 dropout_index,
                                 '_seed_',
                                 seed_value,
@@ -115,7 +116,8 @@ run_drimpute <- function(dropout_index, seed_value){
   )
   
   # build the folder saving the imputed data using DrImpute
-  path <- "drimpute_data/"
+  path <- "imputation_drimpute_data/"
+  
   dir.create(file.path(path), showWarnings = FALSE)
   
   # impute the data using DrImpute
@@ -125,7 +127,7 @@ run_drimpute <- function(dropout_index, seed_value){
   
   # write the data
   write.table(exdata,
-              paste0(path, "drimpute_",drop_index,"_",seed_value,".csv"),
+              paste0(path, "drimpute_",dropout_index,"_",seed_value,".csv"),
               sep=',',
               row.names = F,
               col.names = F
@@ -137,12 +139,12 @@ run_drimpute <- function(dropout_index, seed_value){
 run_scimpute <- function(dropout_index, seed_value){
   
   # Parameter in the function
-  # drop_index: the index of dropout_mid to control the dropout rate
+  # dropout_index: the index of dropout_mid to control the dropout rate
   # seed_value: the random seed
   
   
   # load the data
-  data = readRDS(file = paste0('simulation_data/simulation_data_drop_index_',
+  data = readRDS(file = paste0('simulation_data/simulation_data_dropout_index_',
                                dropout_index,
                                '_seed_',
                                seed_value,
@@ -150,12 +152,16 @@ run_scimpute <- function(dropout_index, seed_value){
   )
   
   # build the folder saving the imputed data using scimpute method
-  path = "scimpute_data/"
+  path = "imputation_scimpute_data/"
   dir.create(file.path(path), showWarnings = FALSE)
   
   # impute the data using scImpute
   data_dropout = data$data_dropout
-  write.table(data_dropout,paste0(path, "dropout_scimpute_",dropout_index,"_",seed_value,".csv"),
+  
+  write.table(data_dropout,paste0(path, 
+                                  "dropout_scimpute_",
+                                  dropout_index,"_",
+                                  seed_value,".csv"),
               sep=',',
               row.names = TRUE,
               col.names = TRUE
@@ -164,14 +170,14 @@ run_scimpute <- function(dropout_index, seed_value){
   file.remove(paste0(path, "scimpute_", dropout_index, "_", seed_value,"_*"))
   
   # run scImpute
-  scimpute(# full path to raw count matrix
+  scimpute(
     paste0(path, "dropout_scimpute_",dropout_index,"_",seed_value,".csv"),
-    infile = "csv",           # format of input file
-    outfile = "csv",          # format of output file
-    out_dir = paste0(path, "scimpute_", dropout_index, "_", seed_value,"_"),# full path to output directory
-    drop_thre = 0.5,          # threshold set on dropout probability
+    infile = "csv",           
+    outfile = "csv",         
+    out_dir = paste0(path, "scimpute_", dropout_index, "_", seed_value,"_"),
+    drop_thre = 0.5,         
     Kcluster = 2,
-    ncores = 2)              # number of cores used in parallel computation'
+    ncores = 2)       
   # 
   # clean the data
   data_dropout = read.table( file = paste0(path, "scimpute_",
@@ -202,28 +208,28 @@ run_scimpute <- function(dropout_index, seed_value){
 # 
 # cwd = os.getcwd()
 # 
-# if not os.path.exists(cwd+"/magic_data"):
-#   os.makedirs(cwd+"/magic_data")
+# if not os.path.exists(cwd+"/imputation_magic_data"):
+#   os.makedirs(cwd+"/imputation_magic_data")
 #
-# X =pd.read_csv("simulation_data/simulation_data_drop_index_"+str(drop_value)+"_seed_"+str(seed_value)+".txt",sep = ' ', header=None)
+# X =pd.read_csv("simulation_data/simulation_data_dropout_index_"+str(dropout_value)+"_seed_"+str(seed_value)+".txt",sep = ' ', header=None)
 #
 # magic_operator = magic.MAGIC()
 # X_magic = magic_operator.fit_transform(X.T)
 #
 # out_magic = X_magic.T
-# out_magic.to_csv(cwd+"/magic_data/magic_"+str(drop_value)+"_"+str(seed_value)+".csv", sep = '\t', header= None)
+# out_magic.to_csv(cwd+"/imputation_magic_data/magic_"+str(dropout_value)+"_"+str(seed_value)+".csv", sep = '\t', header= None)
 # -----------------------------------------------------------------------------
 
 ######## SCRABBLE ##############
 run_scrabble <- function(dropout_index, seed_value){
   
   # Parameter in the function
-  # drop_index: the index of dropout_mid to control the dropout rate
+  # dropout_index: the index of dropout_mid to control the dropout rate
   # seed_value: the random seed
   
   
   # load the data
-  data = readRDS(file = paste0('simulation_data/simulation_data_drop_index_',
+  data = readRDS(file = paste0('simulation_data/simulation_data_dropout_index_',
                                dropout_index,
                                '_seed_',
                                seed_value,
@@ -232,12 +238,15 @@ run_scrabble <- function(dropout_index, seed_value){
   
   
   
-  path = "scrabble_data/"
+  path = "imputation_scrabble_data/"
+  
   dir.create(file.path(path), showWarnings = FALSE)
   
   # impute the data using DrImpute
   data1 = list()
+  
   data1[[1]] = data$data_dropout
+  
   data1[[2]] = data$data_bulk
   
   # set up the parameters
@@ -274,13 +283,13 @@ calculate_similarity <- function(data1,data2){
 run_error <- function(dropout_index, seed_value){
   
   # Parameter in the function
-  # drop_index: the index of dropout_mid to control the dropout rate
+  # dropout_index: the index of dropout_mid to control the dropout rate
   # seed_value: the random seed
   
   options( warn = -1 )
   # load the simulationd data
-  data_simulation = readRDS(file = paste0('simulation_data/simulation_data_drop_index_',
-                                          drop_index,
+  data_simulation = readRDS(file = paste0('simulation_data/simulation_data_dropout_index_',
+                                          dropout_index,
                                           '_seed_',
                                           seed_value,
                                           '.rds')
@@ -291,6 +300,7 @@ run_error <- function(dropout_index, seed_value){
   
   # obtain the true data
   data_true = data_simulation$data_true
+  
   data_true = data_true[index,]
   
   # cell-cell correlation of the true data
@@ -301,6 +311,7 @@ run_error <- function(dropout_index, seed_value){
   
   # obtain the dropout data
   data_dropout = data_simulation$data_dropout
+  
   data_dropout = data_dropout[index,]
   
   # cell-cell correlation of the dropout data
@@ -310,8 +321,8 @@ run_error <- function(dropout_index, seed_value){
   data_dropout_gene = cor(t((data_dropout)), method = "pearson")
   
   # load imputed data from DrImpute
-  data_drimpute = read.table( file = paste0("drimpute_data/drimpute_",
-                                            drop_index, "_",
+  data_drimpute = read.table( file = paste0("imputation_drimpute_data/drimpute_",
+                                            dropout_index, "_",
                                             seed_value,
                                             ".csv") ,
                               header = FALSE, sep=","
@@ -326,8 +337,8 @@ run_error <- function(dropout_index, seed_value){
   data_drimpute_gene = cor(t((data_drimpute)), method = "pearson")
   
   # load imputed data from scImpute
-  data_scimpute = read.table( file = paste0("scimpute_data/scimpute_",
-                                            drop_index, "_",
+  data_scimpute = read.table( file = paste0("imputation_scimpute_data/scimpute_",
+                                            dropout_index, "_",
                                             seed_value,
                                             ".csv") ,
                               header = FALSE, sep=","
@@ -342,14 +353,18 @@ run_error <- function(dropout_index, seed_value){
   data_scimpute_gene = cor(t((data_scimpute)), method = "pearson")
   
   # load the MAGIC imputed data 
-  data = read.csv(paste0("magic_data/magic_",drop_index,"_",seed_value,".csv"),
+  data = read.csv(paste0("imputation_magic_data/magic_",dropout_index,"_",seed_value,".csv"),
                   header = FALSE,
                   sep = "\t")
   
   data$V1 = NULL
+  
   data_magic = as.matrix(data)
+  
   data_magic[data_magic < 0] = 0
+  
   data_magic[is.nan(data_magic)] = 0
+  
   data_magic = data_magic[index,]
   
   # cell-cell correlation of the MAGIC imputed data
@@ -359,8 +374,8 @@ run_error <- function(dropout_index, seed_value){
   data_magic_gene = cor(t((data_magic)), method = "pearson")
   
   # load imputed data from scrabble
-  data_scrabble = read.table( file = paste0("scrabble_data/scrabble_",
-                                            drop_index, "_",
+  data_scrabble = read.table( file = paste0("imputation_scrabble_data/scrabble_",
+                                            dropout_index, "_",
                                             seed_value,
                                             ".csv") ,
                               header = FALSE, sep=","
@@ -377,38 +392,58 @@ run_error <- function(dropout_index, seed_value){
   # calulate the error between the imputed data and true data
   error = matrix(0, nrow = 6, ncol = 1)
   error[1] = norm(log10(data_dropout + 1) - log10(data_true + 1), type = "2")
+  
   error[2] = norm(log10(data_drimpute + 1) - log10(data_true + 1), type = "2")
+  
   error[3] = norm(log10(data_scimpute + 1) - log10(data_true + 1), type = "2")
+  
   error[4] = norm(log10(data_magic + 1) - log10(data_true + 1), type = "2")
+  
   error[5] = norm(log10(data_scrabble + 1) - log10(data_true + 1), type = "2")
+  
   error[6] = data_simulation$percentage_zeros
   
   # calulate the similarity between the cell-cell
   # correlation of the imputed data and the one of the true data
   error_cell = matrix(0, nrow = 6, ncol = 1)
+  
   error_cell[1] = calculate_similarity(data_true_cell, data_dropout_cell)
+  
   error_cell[2] = calculate_similarity(data_true_cell, data_drimpute_cell)
+  
   error_cell[3] = calculate_similarity(data_true_cell, data_scimpute_cell)
+  
   error_cell[4] = calculate_similarity(data_true_cell, data_magic_cell)
+  
   error_cell[5] = calculate_similarity(data_true_cell, data_scrabble_cell)
+  
   error_cell[6] = data_simulation$percentage_zeros
   
   
   # calulate the similarity between the gene-gene
   # correlation of the imputed data and the one of the true da
   error_gene = matrix(0, nrow = 6, ncol = 1)
+  
   error_gene[1] = calculate_similarity(data_true_gene, data_dropout_gene)
+  
   error_gene[2] = calculate_similarity(data_true_gene, data_drimpute_gene)
+  
   error_gene[3] = calculate_similarity(data_true_gene, data_scimpute_gene)
+  
   error_gene[4] = calculate_similarity(data_true_gene, data_magic_gene)
+  
   error_gene[5] = calculate_similarity(data_true_gene, data_scrabble_gene)
+  
   error_gene[6] = data_simulation$percentage_zeros
   
   # gather the errors as a list
-  result <- list()
-  result$error <- error
-  result$error_cell <- error_cell
-  result$error_gene <- error_gene
+  result = list()
+  
+  result$error = error
+  
+  result$error_cell = error_cell
+  
+  result$error_gene = error_gene
   
   return(result)
   
@@ -428,6 +463,7 @@ plot_comparison <- function(data, ylabels = "Error", ylim_value = 100, h_ylim = 
   
   # extract the data with the first five columns
   dataV0 = data[c(1:5),]
+  
   dataV1 = data.frame(as.vector(t(dataV0)))
   
   # calculate the dropout rate
@@ -435,8 +471,10 @@ plot_comparison <- function(data, ylabels = "Error", ylim_value = 100, h_ylim = 
   
   # the number of data using for plotting the boxplot
   # dataV1 is built with two columns: y values and group labels
-  N = dim(dataV1)[1]                                                      
+  N = dim(dataV1)[1]     
+  
   dataV1$group = rep(c(1:5), each = N/5)
+  
   colnames(dataV1) = c('y','group')
   
   # define the comparison lists
@@ -467,19 +505,21 @@ plot_comparison <- function(data, ylabels = "Error", ylim_value = 100, h_ylim = 
           panel.background = element_blank())
   
   return(pp)
+  
 }
 
+
 # plot the mean-variance function
-plot_meansd <- function(drop_index, seed_value){
+plot_meansd <- function(dropout_index, seed_value){
   
   # Parameter in the function
-  # drop_index: the index of dropout_mid to control the dropout rate
+  # dropout_index: the index of dropout_mid to control the dropout rate
   # seed_value: the random seed
   
   options( warn = -1 )
   # load the simulationd data
-  data_simulation = readRDS(file = paste0('simulation_data/simulation_data_drop_index_',
-                                          drop_index,
+  data_simulation = readRDS(file = paste0('simulation_data/simulation_data_dropout_index_',
+                                          dropout_index,
                                           '_seed_',
                                           seed_value,
                                           '.rds')
@@ -487,15 +527,17 @@ plot_meansd <- function(drop_index, seed_value){
   
   # true data
   data_true = data_simulation$data_true
+  
   data_true = as.matrix(data_true)
   
   # raw data (dropout data)
   data_dropout = data_simulation$data_dropout
+  
   data_dropout = as.matrix(data_dropout)
   
   # load imputed data from Drimpute
-  data_drimpute = read.table( file = paste0("drimpute_data/drimpute_",
-                                            drop_index, "_",
+  data_drimpute = read.table( file = paste0("imputation_drimpute_data/drimpute_",
+                                            dropout_index, "_",
                                             seed_value,
                                             ".csv") ,
                               header = FALSE, sep=","
@@ -504,8 +546,8 @@ plot_meansd <- function(drop_index, seed_value){
   data_drimpute = as.matrix(data_drimpute)
   
   # load imputed data from scImpute
-  data_scimpute <- read.table( file = paste0("scimpute_data/scimpute_",
-                                             drop_index, "_",
+  data_scimpute <- read.table( file = paste0("imputation_scimpute_data/scimpute_",
+                                             dropout_index, "_",
                                              seed_value,
                                              ".csv") ,
                                header = FALSE, sep=","
@@ -514,15 +556,19 @@ plot_meansd <- function(drop_index, seed_value){
   data_scimpute = as.matrix(data_scimpute)
   
   # load the magic results 
-  data = read.csv(paste0("magic_data/magic_",drop_index,"_",seed_value,".csv"),
+  data = read.csv(paste0("imputation_magic_data/magic_",
+                         dropout_index,"_",
+                         seed_value,".csv"),
                   header = FALSE,
                   sep = "\t")
+  
   data$V1 = NULL
+  
   data_magic = as.matrix(data)
   
   # load imputed data from scrabble
-  data_scrabble = read.table( file = paste0("scrabble_data/scrabble_",
-                                            drop_index, "_",
+  data_scrabble = read.table( file = paste0("imputation_scrabble_data/scrabble_",
+                                            dropout_index, "_",
                                             seed_value,
                                             ".csv") ,
                               header = FALSE, sep=","
@@ -535,21 +581,27 @@ plot_meansd <- function(drop_index, seed_value){
   pl = list()
   
   p = meanSdPlot(log10(data_true + 1), ranks = FALSE)
+  
   pl[[1]] = p$gg + ggtitle(paste0("True Data: ",round(100*ratio_zeros_true),"%")) 
   
   p = meanSdPlot(log10(data_dropout + 1), ranks = FALSE)
+  
   pl[[2]] = p$gg + ggtitle(paste0("Raw Data: ",round(100*ratio_zeros_raw),"%"))
   
   p = meanSdPlot(log10(data_drimpute + 1), ranks = FALSE) 
+  
   pl[[3]] = p$gg + ggtitle("DrImpute") 
   
   p = meanSdPlot(log10(data_scimpute + 1), ranks = FALSE)
+  
   pl[[4]] = p$gg + ggtitle("scImpute")
   
   p = meanSdPlot(log10(data_magic + 1), ranks = FALSE)
+  
   pl[[5]] = p$gg + ggtitle("MAGIC")
   
   p = meanSdPlot(log10(data_scrabble + 1), ranks = FALSE)
+  
   pl[[6]] = p$gg + ggtitle("SCRABBLE")
   
   # combine the six plots as a whole one
@@ -560,19 +612,19 @@ plot_meansd <- function(drop_index, seed_value){
 }
 
 # Plot tsne function
-plot_comparison_tsne <- function(drop_index,
+plot_comparison_tsne <- function(dropout_index,
                                  seed_value, 
                                  initial_dims_value,
                                  perplexity_value){
   
   # Parameter in the function
-  # drop_index: the index of dropout_mid to control the dropout rate
+  # dropout_index: the index of dropout_mid to control the dropout rate
   # seed_value: the random seed
   # initial_dims_value: the initial dimensions used in the tsne
   # perplexity_value: the perplexity used in the tnse
   
-  data_simulation = readRDS(file = paste0('simulation_data/simulation_data_drop_index_',
-                                          drop_index,
+  data_simulation = readRDS(file = paste0('simulation_data/simulation_data_dropout_index_',
+                                          dropout_index,
                                           '_seed_',
                                           seed_value,
                                           '.rds')
@@ -585,33 +637,35 @@ plot_comparison_tsne <- function(drop_index,
   data_dropout = data_simulation$data_dropout
   
   # load imputed data from Drimpute
-  data_drimpute = read.table( file = paste0("drimpute_data/drimpute_",
-                                            drop_index, "_",
+  data_drimpute = read.table( file = paste0("imputation_drimpute_data/drimpute_",
+                                            dropout_index, "_",
                                             seed_value,
                                             ".csv") ,
                               header = FALSE, sep=","
   )
   
   # load imputed data from scImpute
-  data_scimpute = read.table( file = paste0("scimpute_data/scimpute_",
-                                            drop_index, "_",
+  data_scimpute = read.table( file = paste0("imputation_scimpute_data/scimpute_",
+                                            dropout_index, "_",
                                             seed_value,
                                             ".csv") ,
                               header = FALSE, sep=","
   )
   
   # load the magic results 
-  data = read.csv(paste0("magic_data/magic_",
-                         drop_index,"_",
+  data = read.csv(paste0("imputation_magic_data/magic_",
+                         dropout_index,"_",
                          seed_value,".csv"),
                   header = FALSE,
                   sep = "\t")
+  
   data$V1 = NULL
+  
   data_magic = as.matrix(data)
   
   # load imputed data from scrabble
-  data_scrabble = read.table( file = paste0("scrabble_data/scrabble_",
-                                            drop_index, "_",
+  data_scrabble = read.table( file = paste0("imputation_scrabble_data/scrabble_",
+                                            dropout_index, "_",
                                             seed_value,
                                             ".csv") ,
                               header = FALSE, sep=","
@@ -684,14 +738,14 @@ plot_comparison_tsne <- function(drop_index,
 
 
 # plot MA function
-plot_ma <- function(drop_index, seed_value){
+plot_ma <- function(dropout_index, seed_value){
   
   # Parameter in the function
-  # drop_index: the index of dropout_mid to control the dropout rate
+  # dropout_index: the index of dropout_mid to control the dropout rate
   # seed_value: the random seed
   
-  data_simulation = readRDS(file = paste0('simulation_data/simulation_data_drop_index_',
-                                          drop_index,
+  data_simulation = readRDS(file = paste0('simulation_data/simulation_data_dropout_index_',
+                                          dropout_index,
                                           '_seed_',
                                           seed_value,
                                           '.rds')
@@ -705,15 +759,17 @@ plot_ma <- function(drop_index, seed_value){
   
   
   # load the magic results 
-  data = read.csv(paste0("magic_data/magic_",drop_index,"_",seed_value,".csv"),
+  data = read.csv(paste0("imputation_magic_data/magic_",
+                         dropout_index,"_",
+                         seed_value,".csv"),
                   header = FALSE,
                   sep = "\t")
   data$V1 = NULL
   data_magic = as.matrix(data)
   
   # load imputed data from scImpute
-  data_scimpute = read.table( file = paste0("scimpute_data/scimpute_",
-                                            drop_index, "_",
+  data_scimpute = read.table( file = paste0("imputation_scimpute_data/scimpute_",
+                                            dropout_index, "_",
                                             seed_value,
                                             ".csv") ,
                               header = FALSE, sep=","
@@ -721,8 +777,8 @@ plot_ma <- function(drop_index, seed_value){
   
   
   # load imputed data from Drimpute
-  data_drimpute = read.table( file = paste0("drimpute_data/drimpute_",
-                                            drop_index, "_",
+  data_drimpute = read.table( file = paste0("imputation_drimpute_data/drimpute_",
+                                            dropout_index, "_",
                                             seed_value,
                                             ".csv") ,
                               header = FALSE, sep=","
@@ -730,8 +786,8 @@ plot_ma <- function(drop_index, seed_value){
   
   
   # load imputed data from scrabble
-  data_scrabble = read.table( file = paste0("scrabble_data/scrabble_",
-                                            drop_index, "_",
+  data_scrabble = read.table( file = paste0("imputation_scrabble_data/scrabble_",
+                                            dropout_index, "_",
                                             seed_value,
                                             "_", k,
                                             ".csv") ,
@@ -804,13 +860,19 @@ ggmaplot1 <- function (data, fdr = 0.05, fc = 1.5, genenames = NULL,
 {
   
   if(!base::inherits(data, c("matrix", "data.frame", "DataFrame", "DE_Results", "DESeqResults")))
+    
     stop("data must be an object of class matrix, data.frame, DataFrame, DE_Results or DESeqResults")
+  
   if(!is.null(detection_call)){
     if(nrow(data)!=length(detection_call))
+      
       stop("detection_call must be a numeric vector of length = nrow(data)")
+    
   }
   else if("detection_call" %in% colnames(data)){
+    
     detection_call = as.vector(data$detection_call)
+    
   }
   else detection_call = rep(1, nrow(data))
   
@@ -827,8 +889,11 @@ ggmaplot1 <- function (data, fdr = 0.05, fc = 1.5, genenames = NULL,
     stop("genenames should be of length nrow(data).")
   
   sig <- rep(3, nrow(data))
+  
   sig[which(data$padj <= fdr & data$log2FoldChange < 0 & abs(data$log2FoldChange) >= log2(fc) & detection_call ==1)] = 2
+  
   sig[which(data$padj <= fdr & data$log2FoldChange > 0 & abs(data$log2FoldChange) >= log2(fc) & detection_call ==1)] = 1
+  
   data <- data.frame(name = genenames, mean = data$baseMean, lfc = data$log2FoldChange,
                      padj = data$padj, sig = sig)
   
