@@ -31,15 +31,10 @@ data_sc <- data[[1]]
 data_bulk <- data[[2]]
 data_true <- data[[3]]
 
-parameter <- c(10,1e-5,1e-4)
-nIter <- 20
+parameter <- c(1,1e-6,1e-4)
 
 result <- scrabble(data1,
-                   parameter = parameter, 
-                   nIter = 30,
-                   error_out_threshold = 1e-7, 
-                   nIter_inner = 100,
-                   error_inner_threshold = 1e-5)
+                   parameter = parameter)
 ```                   
 ## MATLAB Version
 
@@ -47,7 +42,7 @@ result <- scrabble(data1,
 #### Load the data
 There are three datasets in the .mat file. There are the true data set, Drop-out data set, and the imputed data set by SCRABBLE.
 ```
-load('demo_data_HF.mat')
+load('demo_data.mat')
 ```
 #### Prepare the data
 We construct the data structure which is taken as one of the input of SCRABBLE.
@@ -59,12 +54,11 @@ data.data_bulk = data_bulk;
 #### Prepare the parameter for SCRABBLE
 Set up the parameters used in example
 ```
-parameter = [10,1e-5,1e-4];
-nIter = 100;
+parameter = [1,1e-6,1e-4];
 ```
 #### Run SCRABBLE
 ```
-dataRecovered = scrabble(data,parameter,nIter);
+dataRecovered = scrabble(data,parameter);
 ```
 #### Visualize the results
 ```
