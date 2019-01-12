@@ -1,7 +1,7 @@
 Package: SCRABBLE
 Type: Package
 Title: Impute scRNAseq data method
-Version: 0.2.0
+Version: 0.0.1
 Author: Tao Peng
 Maintainer: The package maintainer Tao Peng <tpengmath@gmail.com>
 Description: SCRABBLE imputes drop-out data by optimizing an objective function 
@@ -25,6 +25,6 @@ Imports: Rcpp (>= 0.12.13),
          reshape2,
          gridExtra
 LinkingTo: Rcpp, RcppEigen, gridExtra
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 Suggests: knitr,rmarkdown,BiocStyle
 VignetteBuilder: knitr

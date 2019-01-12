@@ -1,0 +1,75 @@
+---
+title: "Introduction to SCRABBLE"
+author: 
+  - name: Tao Peng
+date: "Updated on `r Sys.Date()`"
+package: "SCRABBLE"
+output: BiocStyle::pdf_document
+mainfont: Arial
+vignette: >
+  %\VignetteIndexEntry{SCRABBLE}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r}
+library(SCRABBLE)
+```
+
+# Simulation Data Study
+## Data Generation
+
+We simulated scRNA-Seq data consisting of three cell types using the Splat method in the Bioconductor package Splatter 8. Dataset consists of 800 genes and 1000 cells. The details of the parameters used in the simulation data generation are seen in Supplementary Table 2. Dropout midpoints (parameter dropout_mid in Splatter) are used to control the dropout rate in the simulated data. Splatter generates the data matrices for the true data and its corresponding dropout data using a given dropout midpoint. The corresponding bulk RNA-Seq data are the mean values of genes in the true scRNA-Seq data. The dropout RNA-Seq and bulk RNA-Seq data matrices are the inputs of the imputation methods. To determine the performance stability of the methods, we generated 100 datasets for each dropout midpoints. 
+
+### Load the data
+
+```{r}
+data_sc <- data[[1]]
+data_bulk <- data[[2]]
+data_true <- data[[3]]
+```
+
+### Plot the data
+```{r, fig.height= 3, fig.width= 5}
+pl <- list()
+pl[[1]] <- plot_data(log10(data_true + 1),"True Data")
+pl[[2]] <- plot_data(log10(data_sc + 1),"Drop-out Data")
+main <- gridExtra::grid.arrange(grobs = pl,ncol = 2, top = "")
+```
+
+## Run SCRABBLE
+
+SCRABBLE imputes drop-out data by optimizing an objective function that consists of three terms. The first term ensures that imputed values for genes with nonzero expression remain as close to their original values as possible, thus minimizing unwanted bias towards expressed genes. The second term ensures the rank of the imputed data matrix to be as small as possible. The rationale is that we only expect a limited number of distinct cell types in the samples. The third term operates on the bulk RNA-Seq data. It ensures consistency between the average gene expression of the aggregated imputed data and the average gene expression of the bulk RNA-Seq data. We developed 58 a convex optimization algorithm to minimize the objective function.
+
+### Set up the parameter used in SCRABBLE
+```{r}
+parameter <- c(1,1e-6,1e-4)
+```
+
+### Run SCRABLE
+```{r}
+result <- scrabble(data, parameter = parameter)
+```
+
+### Plot the data
+```{r, fig.height = 3, fig.width= 7, fig.wide = TRUE}
+pl <- list()
+pl[[1]] <- plot_data(log10(data[[3]] + 1),"True Data")
+pl[[2]] <- plot_data(log10(data[[1]] + 1),"Drop-out Data")
+pl[[3]] <- plot_data(log10(result + 1),"Imputed by SCRABBLE")
+main <- gridExtra::grid.arrange(grobs = pl, ncol = 3, top = "")
+```
+
+# SessionInfo
+```{r}
+sessionInfo()
+```

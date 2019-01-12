@@ -14,7 +14,7 @@ install_github("tanlabcode/SCRABBLE/tree/master/R")
 
 ### Install from source codes
 
-Download source codes [here](https://chopri.box.com/s/5vhh5ex450ml2pqf7ili5trzqnp5fumc) 
+Download source codes [here](https://chopri.box.com/s/2pb1ut9l2f49nxi3wnllprxhvi0reupq) 
 and In R type:
  
 ```
