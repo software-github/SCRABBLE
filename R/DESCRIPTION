@@ -3,7 +3,7 @@ Type: Package
 Title: Impute scRNAseq data method
 Version: 0.0.1
 Author: Tao Peng
-Maintainer: The package maintainer Tao Peng <tpengmath@gmail.com>
+Maintainer: The package maintainer Tao Peng <software.github@gmail.com>
 Description: SCRABBLE imputes drop-out data by optimizing an objective function 
    that consists of three terms. The first term ensures that imputed values for 
    genes with nonzero expression remain as close to their original values as possible, 
