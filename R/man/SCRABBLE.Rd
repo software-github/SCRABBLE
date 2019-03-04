@@ -4,8 +4,8 @@
 \alias{scrabble}
 \title{Runs SCRABBLE}
 \usage{
-scrabble(data, parameter, nIter = 60, error_out_threshold = 1e-07,
-  nIter_inner = 100, error_inner_threshold = 1e-05)
+scrabble(data, parameter, nIter = 20, error_out_threshold = 1e-04,
+  nIter_inner = 20, error_inner_threshold = 1e-04)
 }
 \arguments{
 \item{data}{the input data list. The input

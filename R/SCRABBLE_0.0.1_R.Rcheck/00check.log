@@ -1,8 +1,0 @@
-* using log directory ‘/mnt/isilon/tan_lab/pengt/Documents/Chop/SCRABBLE_github/SCRABBLE/R/SCRABBLE_0.0.1_R.Rcheck’
-* using R version 3.5.1 (2018-07-02)
-* using platform: x86_64-redhat-linux-gnu (64-bit)
-* using session charset: UTF-8
-* checking package directory ... ERROR
-package directory ‘/mnt/isilon/tan_lab/pengt/Documents/Chop/SCRABBLE_github/SCRABBLE/R/SCRABBLE_0.0.1_R.Rcheck/00_pkg_src/SCRABBLE_0.0.1_R’ does not exist
-* DONE
-Status: 1 ERROR

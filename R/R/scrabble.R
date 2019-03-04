@@ -42,10 +42,10 @@
 #'
 scrabble <- function(data,
                      parameter,
-                     nIter = 60,
-                     error_out_threshold = 1e-7,
-                     nIter_inner = 100,
-                     error_inner_threshold = 1e-5){
+                     nIter = 20,
+                     error_out_threshold = 1e-4,
+                     nIter_inner = 20,
+                     error_inner_threshold = 1e-4){
 
   # Use the sparse matrix to store the matrix
   Y <- as(t(as.matrix(data[[1]])), "dgCMatrix")
