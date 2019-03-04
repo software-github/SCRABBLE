@@ -16,15 +16,15 @@
 #' @param parameter the vector of parameters. The first parameter is the value of alpha in the mathematical model
 #' , the second one is the value of beta in the mathematical model.
 #'
-#' @param nIter the maximum iterations, the default is 60.
+#' @param nIter the maximum iterations, the default is 20.
 #'
 #' @param error_out_threshold the threshold of the error between the current imputed matrix and the previous one.
-#' Default is 1e-5.
+#' Default is 1e-4.
 #'
-#' @param nIter_inner the maximum interations of calculating the sub-optimization problem. Default is 60.
+#' @param nIter_inner the maximum interations of calculating the sub-optimization problem. Default is 20.
 #'
 #' @param error_inner_threshold the threshold of the error between the current updated matrix and the previous one.
-#' Default is 1e-5.
+#' Default is 1e-4.
 #'
 #' @examples
 #' # Set up the parameter used in SCRABBLE
