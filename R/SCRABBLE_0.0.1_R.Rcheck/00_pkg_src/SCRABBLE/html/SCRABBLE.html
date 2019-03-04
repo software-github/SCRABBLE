@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Runs SCRABBLE</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for scrabble {SCRABBLE}"><tr><td>scrabble {SCRABBLE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Runs SCRABBLE</h2>
+
+<h3>Description</h3>
+
+<p>SCRABBLE imputes drop-out data by optimizing an objective function that consists of three terms.
+The first term ensures that imputed values for genes with nonzero expression remain as close to their
+original values as possible, thus minimizing unwanted bias towards expressed genes. The second term ensures
+the rank of the imputed data matrix to be as small as possible. The rationale is that we only expect a
+limited number of distinct cell types in the samples. The third term operates on the bulk RNA-Seq data.
+It ensures consistency between the average gene expression of the aggregated imputed data and the
+average gene expression of the bulk RNA-Seq data. We developed 58 a convex optimization algorithm to minimize
+the objective function.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+scrabble(data, parameter, nIter = 60, error_out_threshold = 1e-07,
+  nIter_inner = 100, error_inner_threshold = 1e-05)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>the input data list. The input
+data is a list of two datasets, scRNAseq and bulk RNAseq.</p>
+</td></tr>
+<tr valign="top"><td><code>parameter</code></td>
+<td>
+<p>the vector of parameters. The first parameter is the value of alpha in the mathematical model
+, the second one is the value of beta in the mathematical model.</p>
+</td></tr>
+<tr valign="top"><td><code>nIter</code></td>
+<td>
+<p>the maximum iterations, the default is 60.</p>
+</td></tr>
+<tr valign="top"><td><code>error_out_threshold</code></td>
+<td>
+<p>the threshold of the error between the current imputed matrix and the previous one.
+Default is 1e-5.</p>
+</td></tr>
+<tr valign="top"><td><code>nIter_inner</code></td>
+<td>
+<p>the maximum interations of calculating the sub-optimization problem. Default is 60.</p>
+</td></tr>
+<tr valign="top"><td><code>error_inner_threshold</code></td>
+<td>
+<p>the threshold of the error between the current updated matrix and the previous one.
+Default is 1e-5.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A data matrix with the same size of the input scRNAseq data
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Set up the parameter used in SCRABBLE
+parameter &lt;- c(1, 1e-6, 1e-4)
+
+# Run SCRABLE
+result &lt;- scrabble(data,parameter = parameter)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>SCRABBLE</em> version 0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>
