@@ -1,12 +1,12 @@
 #' Runs SCRABBLE
 #'
-#' SCRABBLE imputes drop-out data by optimizing an objective function that consists of three terms.
+#' This package imputes drop-out data by optimizing an objective function that consists of three terms.
 #' The first term ensures that imputed values for genes with nonzero expression remain as close to their
 #' original values as possible, thus minimizing unwanted bias towards expressed genes. The second term ensures
 #' the rank of the imputed data matrix to be as small as possible. The rationale is that we only expect a
 #' limited number of distinct cell types in the samples. The third term operates on the bulk RNA-Seq data.
 #' It ensures consistency between the average gene expression of the aggregated imputed data and the
-#' average gene expression of the bulk RNA-Seq data. We developed 58 a convex optimization algorithm to minimize
+#' average gene expression of the bulk RNA-Seq data. We developed a convex optimization algorithm to minimize
 #' the objective function.
 #'
 #'
@@ -31,7 +31,7 @@
 #' parameter <- c(1, 1e-6, 1e-4)
 #'
 #' # Run SCRABLE
-#' result <- scrabble(data,parameter = parameter)
+#' result <- scrabble(demo_data,parameter = parameter)
 #'
 #' @return A data matrix with the same size of the input scRNAseq data
 #'

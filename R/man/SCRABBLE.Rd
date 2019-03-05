@@ -14,27 +14,27 @@ data is a list of two datasets, scRNAseq and bulk RNAseq.}
 \item{parameter}{the vector of parameters. The first parameter is the value of alpha in the mathematical model
 , the second one is the value of beta in the mathematical model.}
 
-\item{nIter}{the maximum iterations, the default is 60.}
+\item{nIter}{the maximum iterations, the default is 20.}
 
 \item{error_out_threshold}{the threshold of the error between the current imputed matrix and the previous one.
-Default is 1e-5.}
+Default is 1e-4.}
 
-\item{nIter_inner}{the maximum interations of calculating the sub-optimization problem. Default is 60.}
+\item{nIter_inner}{the maximum interations of calculating the sub-optimization problem. Default is 20.}
 
 \item{error_inner_threshold}{the threshold of the error between the current updated matrix and the previous one.
-Default is 1e-5.}
+Default is 1e-4.}
 }
 \value{
 A data matrix with the same size of the input scRNAseq data
 }
 \description{
-SCRABBLE imputes drop-out data by optimizing an objective function that consists of three terms.
+This package imputes drop-out data by optimizing an objective function that consists of three terms.
 The first term ensures that imputed values for genes with nonzero expression remain as close to their
 original values as possible, thus minimizing unwanted bias towards expressed genes. The second term ensures
 the rank of the imputed data matrix to be as small as possible. The rationale is that we only expect a
 limited number of distinct cell types in the samples. The third term operates on the bulk RNA-Seq data.
 It ensures consistency between the average gene expression of the aggregated imputed data and the
-average gene expression of the bulk RNA-Seq data. We developed 58 a convex optimization algorithm to minimize
+average gene expression of the bulk RNA-Seq data. We developed a convex optimization algorithm to minimize
 the objective function.
 }
 \examples{
@@ -42,6 +42,6 @@ the objective function.
 parameter <- c(1, 1e-6, 1e-4)
 
 # Run SCRABLE
-result <- scrabble(data,parameter = parameter)
+result <- scrabble(demo_data,parameter = parameter)
 
 }
