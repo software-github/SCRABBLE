@@ -9,12 +9,14 @@ SCRABBLE imputes drop-out data by optimizing an objective function that consists
 ### Install from Github 
 ```
 library(devtools)
-install_github("tanlabcode/SCRABBLE/tree/master/R")
+install_github("software-github/SCRABBLE/R")
 ```
 
 ### Install from source codes
 
-Download source codes [here](https://github.com/software-github/SCRABBLE/blob/master/SCRABBLE_0.0.1_R.tar.gz?raw=true) 
+Download source codes [here](https://github.com/software-github/SCRABBLE/blob/master/SCRABBLE_0.0.1.tar.gz?raw=true) 
+
+
 and In R type:
  
 ```
@@ -27,13 +29,13 @@ Where `path_to_file` would represent the full path and file name:
 
 ### Quick start
 ```
-data_sc <- data[[1]]
-data_bulk <- data[[2]]
-data_true <- data[[3]]
+data_sc <- demo_data[[1]]
+data_bulk <- demo_data[[2]]
+data_true <- demo_data[[3]]
 
 parameter <- c(1,1e-6,1e-4)
 
-result <- scrabble(data, parameter = parameter)
+result <- scrabble(demo_data, parameter = parameter)
 ```                   
 ## MATLAB Version
 

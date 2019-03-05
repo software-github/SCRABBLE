@@ -1,4 +1,4 @@
-function dataRecovered = scrabble(data,parameter,nIter)
+function dataRecovered = scrabble(data,parameter,nIter,nIter_inner,error_inner_threshold,error_outer_threshold)
 
 %% DESCRIPTION
 % SCRABBLE: scrabble is used to impute the scRNAseq combining with
@@ -23,16 +23,39 @@ function dataRecovered = scrabble(data,parameter,nIter)
 % input data matrix. 
 % 
 % nIter: nIter is the maximal number of iterations. The recommmdation times of
-% iteration are 100.
+% iteration are 20.
 
 % AUTHOR: Tao Peng
 % Email: pengt@email.chop.edu
 
 %% Main Codes
 % Check the inputs of SCRABBLE
-if nargin < 3
+if nargin < 2
    disp('The inputs of SCRABBLE are not enough. Please check your input.')
    return;
+end
+
+if nargin == 2
+   nIter = 20;
+   nIter_inner = 20;  % the maximum iteration times in the inner optimization
+   error_inner_threshold = 1e-4; % set up the threshold for the inner loop
+   error_outer_threshold = 1e-4; % set up the threshold for the outer loop
+end
+
+if nargin == 3
+   nIter_inner = 20;  % the maximum iteration times in the inner optimization
+   error_inner_threshold = 1e-4; % set up the threshold for the inner loop
+   error_outer_threshold = 1e-4; % set up the threshold for the outer loop
+end
+
+
+if nargin == 4
+   error_inner_threshold = 1e-4; % set up the threshold for the inner loop
+   error_outer_threshold = 1e-4; % set up the threshold for the outer loop
+end
+
+if nargin == 5
+   error_outer_threshold = 1e-4; % set up the threshold for the outer loop
 end
 
 % Determine if the data is consistent or not.
@@ -50,7 +73,7 @@ Y = data.data_sc';                   % prepare the scRNAseq for the model
 zones = (Y > 0);                     % calculate the projection operator
 alpha = parameter(1);                % define the weight of rank
 beta = parameter(2);                 % define the weight of consistency of bulk RNAseq
-gamma = 1e-3*parameter(1);           % define the regularization coefficient
+gamma = parameter(3);           % define the regularization coefficient
 
 % generate the bulk RNAseq.
 % Here we consider two cases. One is the input including the bulk RNAseq
@@ -83,9 +106,7 @@ error = 1;     % initialize the error
 % Since we save the time of optimization, we found that the 2 can get good 
 % performance. If we could not get good performance, we could increase the
 % iteration times here.
-nIter_inner = 10;  % the maximum iteration times in the inner optimization
-error_inner_threshold = 1e-6; % set up the threshold for the inner loop
-error_outer_threshold = 1e-7; % set up the threshold for the outer loop
+
 gamma = double(gamma);        % make the scalar double 
 Y = double(Y);                % make the matrix double
 B = double(B);                % make the matrix double

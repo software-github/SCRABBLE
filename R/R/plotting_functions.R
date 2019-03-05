@@ -1,4 +1,22 @@
 # plot the figures of data
+#'
+#' It is used to plot the data as a images
+#'
+#' @param data the input data which is a data matrix.
+#'
+#' @param name the name of the data and it is a string.
+#'
+#'
+#' @examples
+#' # Run plot_data
+#' p <- plot_data(demo_data[[1]],"Drop-out Data")
+#'
+#' @return ggplot handler
+#'
+#' @export
+#'
+#'
+
 plot_data <- function(data,name){
   limit <- c(0,5)
   myPalette <- colorRampPalette(rev(brewer.pal(11, "Spectral")))
@@ -6,8 +24,9 @@ plot_data <- function(data,name){
   colnames(data) <- NULL
   rownames(data) <- NULL
   longData<-melt(as.matrix(data))
-  pl <- ggplot(longData, aes(x = Var2, y = Var1)) +
-    geom_raster(aes(fill=value)) +
+  colnames(longData) <- c("Var1", "Var2","value")
+  pl <- ggplot(longData, aes_string(x = "Var2", y = "Var1")) +
+    geom_raster(aes_string(fill= "value")) +
     scale_colour_gradient2(limits=c(0, 5)) +
     scale_fill_gradientn(colours = c("white", "blue", "red"), values = c(0,0.6,1)) +
     theme_bw()  +
