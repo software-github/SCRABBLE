@@ -83,7 +83,7 @@ axis off
 ```
 
 ## Help
-Please feel free to contact Tao Peng (pengt@email.chop.edu) if you have any questions about the software.
+Please feel free to contact Tao Peng (software.github@gmail.com) if you have any questions about the software.
 ## Reference
 Tao Peng et al. Single-cell RNA-Seq imputation constrained by bulk RNA-Seq data. Submitted. 2018
 
