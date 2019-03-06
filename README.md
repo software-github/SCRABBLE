@@ -1,3 +1,6 @@
+
+[![DOI](https://zenodo.org/badge/166503417.svg)](https://zenodo.org/badge/latestdoi/166503417)
+
 # SCRABBLE
 <b>S</b>ingle <b>C</b>ell <b>R</b>NA-Seq imput<b>A</b>tion constrained <b>B</b>y <b>B</b>u<b>L</b>k RNAs<b>E</b>q data (SCRABBLE)
 
