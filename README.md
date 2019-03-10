@@ -1,7 +1,10 @@
+# SCRABBLE
 
 [![DOI](https://zenodo.org/badge/166503417.svg)](https://zenodo.org/badge/latestdoi/166503417)
+[![](https://www.r-pkg.org/badges/version/SCRABBLE?color=yellow)](https://cran.r-project.org/package=SCRABBLE)
+[![](https://img.shields.io/github/languages/code-size/software-github/SCRABBLE.svg)](https://github.com/software-github/SCRABBLE)
 
-# SCRABBLE
+
 <b>S</b>ingle <b>C</b>ell <b>R</b>NA-Seq imput<b>A</b>tion constrained <b>B</b>y <b>B</b>u<b>L</b>k RNAs<b>E</b>q data (SCRABBLE)
 
 ## SCRABBLE has been implemented in R and MATLAB.
@@ -17,18 +20,15 @@ install_github("software-github/SCRABBLE/R")
 
 ### Install from source codes
 
-Download source codes [here](https://github.com/software-github/SCRABBLE/blob/master/SCRABBLE_0.0.1.tar.gz?raw=true) 
+Download source codes [here](https://github.com/software-github/SCRABBLE/blob/master/SCRABBLE_0.0.1.tar.gz?raw=true) and In R type:
 
-
-and In R type:
- 
 ```
 install.packages(path_to_file, type = 'source', rep = NULL)
 ```
+
 Where `path_to_file` would represent the full path and file name:
 - On Windows it will look something like this: "C:\\Downloads\SCRABBLE.tar.gz".
 - On UNIX it will look like this: "~/Downloads/SCRABBLE.tar.gz".
-
 
 ### Quick start
 ```
@@ -57,13 +57,16 @@ data.data_bulk = data_bulk;
 
 #### Prepare the parameter for SCRABBLE
 Set up the parameters used in example
+
 ```
 parameter = [1,1e-6,1e-4];
 ```
+
 #### Run SCRABBLE
 ```
 dataRecovered = scrabble(data,parameter);
 ```
+
 #### Visualize the results
 ```
 gcf = figure(1);
@@ -84,6 +87,7 @@ axis off
 
 ## Help
 Please feel free to contact Tao Peng (software.github@gmail.com) if you have any questions about the software.
+
 ## Reference
 Tao Peng et al. Single-cell RNA-Seq imputation constrained by bulk RNA-Seq data. Submitted. 2018
 
