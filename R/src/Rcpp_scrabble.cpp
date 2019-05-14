@@ -3,6 +3,8 @@
 #include <RcppEigen.h>
 #include <unsupported/Eigen/MatrixFunctions>
 #include <cmath>
+#include <iostream>
+#include <random>
 using namespace Rcpp;
 using namespace Eigen;
 using Eigen::SparseMatrix;
@@ -119,7 +121,12 @@ Eigen::MatrixXd cDescent(SEXP gamma_Y_B_Lambdas, SEXP As, SEXP zoness, SEXP newX
   int m1 = gamma_Y_B_Lambda.rows();
   int n1 = gamma_Y_B_Lambda.cols();
 
-  int i,j,l;
+  std::random_device   rand_dev;
+  std::mt19937  generator(rand_dev());
+  std::uniform_int_distribution<int>  distr1(1, m1);
+  std::uniform_int_distribution<int>  distr2(1, n1);
+
+  int i,j,l,k;
   double tmp,error;
   /* initalize the outpouts */
   MatrixXd X(m1,n1);
@@ -131,12 +138,23 @@ Eigen::MatrixXd cDescent(SEXP gamma_Y_B_Lambdas, SEXP As, SEXP zoness, SEXP newX
   l = 1;
   /* Outputs updated */
   while( (l < nIter) && (error > error_threshold)){
-    for (i = 0; i < m1; i++){
-      for(j = 0; j < n1; j++) {
-        tmp = A.row(i)*X.col(j);
-        tmp = (gamma_Y_B_Lambda(i,j) - tmp + A(i,i)*X(i,j))/(A(i,i) + zones.coeff(i,j));
-        X(i,j) = std::max(tmp,0.);
-      }
+    /* Coordinate descent*/
+    /*
+     for (i = 0; i < m1; i++){
+     for(j = 0; j < n1; j++) {
+     tmp = A.row(i)*X.col(j);
+     tmp = (gamma_Y_B_Lambda(i,j) - tmp + A(i,i)*X(i,j))/(A(i,i) + zones.coeff(i,j));
+     X(i,j) = std::max(tmp,0.);
+     }
+     }
+     */
+    /* Stochastic Coordinate descent*/
+    for (k = 0; k < m1*n1; k++){
+      i = distr1(generator) - 1;
+      j = distr2(generator) - 1;
+      tmp = A.row(i)*X.col(j);
+      tmp = (gamma_Y_B_Lambda(i,j) - tmp + A(i,i)*X(i,j))/(A(i,i) + zones.coeff(i,j));
+      X(i,j) = std::max(tmp,0.);
     }
     error = (X - X1).norm()/(X1.norm());
     X1 = X;

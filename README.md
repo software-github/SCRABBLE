@@ -18,7 +18,7 @@ SCRABBLE imputes drop-out data by optimizing an objective function that consists
 install.packages("SCRABBLE")
 ```
 
-### Install from Github 
+### Install from Github
 ```
 library(devtools)
 install_github("software-github/SCRABBLE/R")
@@ -95,5 +95,4 @@ axis off
 Please feel free to contact Tao Peng (software.github@gmail.com) if you have any questions about the software.
 
 ## Reference
-Tao Peng et al. Single-cell RNA-Seq imputation constrained by bulk RNA-Seq data. Submitted. 2018
-
+Peng, Tao, et al. "SCRABBLE: single-cell RNA-seq imputation constrained by bulk RNA-seq data." Genome biology 20.1 (2019): 88.
